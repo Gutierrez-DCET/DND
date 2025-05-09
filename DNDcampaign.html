@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>D&D Campaign Creator</title>
+  <link rel="stylesheet" href="dndstyles.css">
+</head>
+<body>
+
+  <a href="DNDhomepage.html" class="back-button">← Back to Home</a>
+
+  <div class="container">
+    <h1>Create Your Campaign</h1>
+    <button id="openModalBtn">+ Add New Campaign</button>
+
+    <!-- Modal -->
+    <div id="campaignModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>New Campaign</h2>
+        <form id="campaign-form">
+          <label for="campaign-name">Campaign Name:</label>
+          <input type="text" id="campaign-name" required>
+
+          <label for="campaign-description">Description:</label>
+          <textarea id="campaign-description" rows="4" required></textarea>
+
+          <button type="submit">Save Campaign</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Display saved campaign -->
+    <div id="campaign-display" class="character-display" style="display: none;">
+      <h2>Your Campaign:</h2>
+      <p id="display-campaign-name"></p>
+      <p id="display-campaign-description"></p>
+    </div>
+  </div>
+
+  <script src="dnd.js"></script>
+</body>
+</html>
