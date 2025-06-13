@@ -131,3 +131,13 @@ document.querySelector('.forgot-password')?.addEventListener('click', () => {
         alert('No account found with that email.');
     }
 });
+
+const enemyOthersCheckbox = document.getElementById('enemy-others-checkbox');
+const enemyOthersText = document.getElementById('enemy-others-text');
+
+enemyOthersCheckbox.addEventListener('change', () => {
+  enemyOthersText.disabled = !enemyOthersCheckbox.checked;
+  if (!enemyOthersCheckbox.checked) {
+    enemyOthersText.value = '';
+  }
+});

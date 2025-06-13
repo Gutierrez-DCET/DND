@@ -1,43 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>D&D Campaign Creator</title>
-  <link rel="stylesheet" href="dndstyles.css">
+  <link rel="stylesheet" href="Campaignstyles.css" />
 </head>
 <body>
-
   <a href="DNDhomepage.html" class="back-button">← Back to Home</a>
 
   <div class="container">
     <h1>Create Your Campaign</h1>
     <button id="openModalBtn">+ Add New Campaign</button>
 
-    <!-- Modal -->
+    <!-- Create Campaign Modal -->
     <div id="campaignModal" class="modal">
       <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close" id="createModalClose">&times;</span>
         <h2>New Campaign</h2>
         <form id="campaign-form">
           <label for="campaign-name">Campaign Name:</label>
-          <input type="text" id="campaign-name" required>
+          <input type="text" id="campaign-name" name="campaign-name" required />
 
           <label for="campaign-description">Description:</label>
-          <textarea id="campaign-description" rows="4" required></textarea>
+          <textarea id="campaign-description" name="campaign-description" rows="4" required></textarea>
+
+          <!-- Enemy Types -->
+          <fieldset>
+            <legend>Enemy Types:</legend>
+            <label><input type="checkbox" name="enemy-types" value="Undead" /> Undead</label>
+            <label><input type="checkbox" name="enemy-types" value="Monsters" /> Monsters</label>
+            <label><input type="checkbox" name="enemy-types" value="Beasts" /> Beasts</label>
+            <label><input type="checkbox" name="enemy-types" value="Celestial" /> Celestial</label>
+            <label><input type="checkbox" name="enemy-types" value="Dragon" /> Dragon</label>
+            <label><input type="checkbox" name="enemy-types" value="Mystics" /> Mystics</label>
+            <label><input type="checkbox" name="enemy-types" value="Fiends" /> Fiends</label>
+            <label>
+              <input
+                type="checkbox"
+                id="enemy-others-checkbox"
+                name="enemy-types"
+                value="Others"
+              />
+              Others:
+              <input
+                type="text"
+                id="enemy-others-text"
+                name="enemy-others-text"
+                placeholder="Specify others"
+                style="width: 60%; margin-left: 10px"
+                disabled
+              />
+            </label>
+          </fieldset>
+
+          <!-- Secrets -->
+          <fieldset>
+            <legend>Secrets:</legend>
+            <label><input type="checkbox" name="secrets" value="Room" /> Room</label>
+            <label><input type="checkbox" name="secrets" value="Traps" /> Traps</label>
+            <label><input type="checkbox" name="secrets" value="Chests" /> Chests</label>
+          </fieldset>
+
+          <!-- Difficulty -->
+          <label for="difficulty">Difficulty:</label>
+          <select id="difficulty" name="difficulty" required>
+            <option value="">Select difficulty</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+            <option value="Nightmare">Nightmare</option>
+          </select>
 
           <button type="submit">Save Campaign</button>
         </form>
       </div>
     </div>
 
-    <!-- Display saved campaign -->
-    <div id="campaign-display" class="character-display" style="display: none;">
-      <h2>Your Campaign:</h2>
-      <p id="display-campaign-name"></p>
-      <p id="display-campaign-description"></p>
+    <!-- Campaign Cards Container -->
+    <div id="campaign-list" class="campaign-list"></div>
+
+    <!-- Display Campaign Details Modal -->
+    <div id="detailModal" class="modal">
+      <div class="modal-content detail-modal-content">
+        <span class="close" id="detailModalClose">&times;</span>
+        <h2 id="detail-name"></h2>
+        <p><strong>Description:</strong> <span id="detail-description"></span></p>
+        <p><strong>Enemy Types:</strong> <span id="detail-enemies"></span></p>
+        <p><strong>Secrets:</strong> <span id="detail-secrets"></span></p>
+        <p><strong>Difficulty:</strong> <span id="detail-difficulty"></span></p>
+      </div>
     </div>
   </div>
 
-  <script src="dnd.js"></script>
+  <script src="campaign.js"></script>
 </body>
 </html>
