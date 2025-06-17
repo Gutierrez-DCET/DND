@@ -29,27 +29,77 @@ p {
     gap: 60px; /* was 40px */
 }
 
+/* === New Modern Image Button Styles Start === */
+
 .image-button {
-    width: 40%; /* adapts to screen width */
-    max-width: 400px; /* avoids getting too large */
+    /* Container and link reset */
+    display: block;
+    width: 40%;
+    max-width: 350px;
+    text-decoration: none;
+
+    /* Positioning for children and effects */
+    position: relative;
+    overflow: hidden; /* Contains the zoomed image */
+    border-radius: 15px; /* Apply to the container for a unified look */
+
+    /* Effects and transitions */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Gradient overlay for text readability */
+.image-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.8) 100%);
+    transition: background 0.3s ease;
 }
 
 .image-button img {
+    /* Make image fill the container */
+    display: block;
     width: 100%;
     height: auto;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    
+    /* Transition for the zoom effect */
+    transition: transform 0.4s ease;
 }
 
 .image-button span {
-    display: block;
-    margin-top: 10px;
-    font-size: 1.2em;
+    /* Positioning the text over the image */
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    z-index: 2; /* Ensure it's above the ::after overlay */
+
+    /* Text styling */
+    color: #fff;
+    font-size: 1.4em;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+
+    /* Reset old styles */
+    margin-top: 0;
 }
 
+/* --- Hover Effects --- */
+
 .image-button:hover {
-    transform: scale(1.05);
+    transform: translateY(-10px); /* Lift effect */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5); /* Stronger shadow */
 }
+
+.image-button:hover img {
+    transform: scale(1.05); /* Zoom image on hover */
+}
+
+/* === New Modern Image Button Styles End === */
 
 .ribbon {
     display: flex;

@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="dndstyles.css">
 </head>
 <body>
-    <a href="index.html" class="back-button">← Back to Home</a>
+    <a href="DNDhomepage.html" class="back-button">← Back to Home</a>
     <div class="container">
-        <h1>Create Your D&D Character</h1>
+        <h1>Create Your Character</h1>
         <form id="character-form">
             <div class="form-group">
                 <label for="character-name">Character Name:</label>
@@ -19,37 +19,40 @@
             <div class="form-group">
                 <label for="character-class">Class:</label>
                 <select id="character-class" name="character-class" required>
-                    <option value="warrior">Warrior</option>
-                    <option value="mage">Mage</option>
-                    <option value="rogue">Rogue</option>
-                    <option value="cleric">Cleric</option>
+                    <option value="Warrior">Warrior</option>
+                    <option value="Mage">Mage</option>
+                    <option value="Rogue">Rogue</option>
+                    <option value="Cleric">Cleric</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="character-race">Race:</label>
                 <select id="character-race" name="character-race" required>
-                    <option value="human">Human</option>
-                    <option value="elf">Elf</option>
-                    <option value="dwarf">Dwarf</option>
-                    <option value="orc">Orc</option>
+                    <option value="Human">Human</option>
+                    <option value="Elf">Elf</option>
+                    <option value="Dwarf">Dwarf</option>
+                    <option value="Orc">Orc</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="character-background">Background:</label>
-                <textarea id="character-background" name="character-background" rows="4" required></textarea>
+                <textarea id="character-background" name="character-background" rows="4" placeholder="Describe your character's history..." required></textarea>
             </div>
 
-            <button type="submit">Create Character</button>
+            <button type="submit">Create / Update Character</button>
         </form>
 
-        <div id="character-display" class="character-display">
-            <h2>Your Character:</h2>
-            <p id="display-name"></p>
-            <p id="display-class"></p>
-            <p id="display-race"></p>
-            <p id="display-background"></p>
+        <div id="character-display" class="character-display hidden">
+            <h2>Your Character</h2>
+            <div class="character-info">
+                <p><strong>Name:</strong> <span id="display-name"></span></p>
+                <p><strong>Class:</strong> <span id="display-class"></span></p>
+                <p><strong>Race:</strong> <span id="display-race"></span></p>
+                <p><strong>Background:</strong> <span id="display-background"></span></p>
+            </div>
+            <button id="reset-character-btn" class="reset-button">Reset Character</button>
         </div>
     </div>
 

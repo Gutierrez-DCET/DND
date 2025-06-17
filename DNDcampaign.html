@@ -2,96 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>D&D Campaign Creator</title>
   <link rel="stylesheet" href="Campaignstyles.css" />
 </head>
 <body>
-  <a href="index.html" class="back-button">← Back to Home</a>
+  <a href="DNDhomepage.html" class="back-button">← Back to Home</a>
 
   <div class="container">
-    <h1>Create Your Campaign</h1>
-    <button id="openModalBtn">+ Add New Campaign</button>
+    <h1>Your Campaigns</h1>
+    <button id="openModalBtn" class="add-campaign-btn">+ Add New Campaign</button>
 
-    <!-- Create Campaign Modal -->
-    <div id="campaignModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="createModalClose">&times;</span>
-        <h2>New Campaign</h2>
-        <form id="campaign-form">
-          <label for="campaign-name">Campaign Name:</label>
-          <input type="text" id="campaign-name" name="campaign-name" required />
+    <!-- Campaign Cards Container -->
+    <div id="campaign-list" class="campaign-list">
+      <!-- Campaign cards will be inserted here by JavaScript -->
+    </div>
+  </div>
 
-          <label for="campaign-description">Description:</label>
-          <textarea id="campaign-description" name="campaign-description" rows="4" required></textarea>
+  <!-- Create/Edit Campaign Modal -->
+  <div id="campaignModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="createModalClose">×</span>
+      <h2 id="modal-title">New Campaign</h2>
+      <form id="campaign-form">
+        <!-- Hidden input for editing -->
+        <input type="hidden" id="campaign-id" name="campaign-id">
 
-          <!-- Enemy Types -->
-          <fieldset>
-            <legend>Enemy Types:</legend>
+        <label for="campaign-name">Campaign Name:</label>
+        <input type="text" id="campaign-name" name="campaign-name" required />
+
+        <label for="campaign-description">Description:</label>
+        <textarea id="campaign-description" name="campaign-description" rows="4" required></textarea>
+
+        <fieldset>
+          <legend>Enemy Types</legend>
+          <div class="checkbox-grid">
             <label><input type="checkbox" name="enemy-types" value="Undead" /> Undead</label>
             <label><input type="checkbox" name="enemy-types" value="Monsters" /> Monsters</label>
             <label><input type="checkbox" name="enemy-types" value="Beasts" /> Beasts</label>
             <label><input type="checkbox" name="enemy-types" value="Celestial" /> Celestial</label>
             <label><input type="checkbox" name="enemy-types" value="Dragon" /> Dragon</label>
             <label><input type="checkbox" name="enemy-types" value="Mystics" /> Mystics</label>
-            <label><input type="checkbox" name="enemy-types" value="Fiends" /> Fiends</label>
-            <label>
-              <input
-                type="checkbox"
-                id="enemy-others-checkbox"
-                name="enemy-types"
-                value="Others"
-              />
-              Others:
-              <input
-                type="text"
-                id="enemy-others-text"
-                name="enemy-others-text"
-                placeholder="Specify others"
-                style="width: 60%; margin-left: 10px"
-                disabled
-              />
+            <label class="others-label">
+              <input type="checkbox" id="enemy-others-checkbox" name="enemy-types" value="Others" /> Others:
+              <input type="text" id="enemy-others-text" name="enemy-others-text" placeholder="Specify..." disabled />
             </label>
-          </fieldset>
+          </div>
+        </fieldset>
 
-          <!-- Secrets -->
-          <fieldset>
-            <legend>Secrets:</legend>
-            <label><input type="checkbox" name="secrets" value="Room" /> Room</label>
-            <label><input type="checkbox" name="secrets" value="Traps" /> Traps</label>
-            <label><input type="checkbox" name="secrets" value="Chests" /> Chests</label>
-          </fieldset>
+        <fieldset>
+          <legend>Secrets</legend>
+          <div class="checkbox-grid">
+            <label><input type="checkbox" name="secrets" value="Room" /> Secret Rooms</label>
+            <label><input type="checkbox" name="secrets" value="Traps" /> Hidden Traps</label>
+            <label><input type="checkbox" name="secrets" value="Chests" /> Locked Chests</label>
+          </div>
+        </fieldset>
 
-          <!-- Difficulty -->
-          <label for="difficulty">Difficulty:</label>
-          <select id="difficulty" name="difficulty" required>
-            <option value="">Select difficulty</option>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
-            <option value="Nightmare">Nightmare</option>
-          </select>
+        <label for="difficulty">Difficulty:</label>
+        <select id="difficulty" name="difficulty" required>
+          <option value="" disabled selected>Select difficulty</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+          <option value="Nightmare">Nightmare</option>
+        </select>
 
-          <button type="submit">Save Campaign</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Campaign Cards Container -->
-    <div id="campaign-list" class="campaign-list"></div>
-
-    <!-- Display Campaign Details Modal -->
-    <div id="detailModal" class="modal">
-      <div class="modal-content detail-modal-content">
-        <span class="close" id="detailModalClose">&times;</span>
-        <h2 id="detail-name"></h2>
-        <p><strong>Description:</strong> <span id="detail-description"></span></p>
-        <p><strong>Enemy Types:</strong> <span id="detail-enemies"></span></p>
-        <p><strong>Secrets:</strong> <span id="detail-secrets"></span></p>
-        <p><strong>Difficulty:</strong> <span id="detail-difficulty"></span></p>
-      </div>
+        <button type="submit" id="save-campaign-btn">Save Campaign</button>
+      </form>
     </div>
   </div>
 
+  <!-- Display Campaign Details Modal -->
+  <div id="detailModal" class="modal">
+    <div class="modal-content detail-modal-content">
+      <span class="close" id="detailModalClose">×</span>
+      <h2 id="detail-name"></h2>
+      <p><strong>Description:</strong></p>
+      <p id="detail-description"></p>
+      <p><strong>Enemy Types:</strong> <span id="detail-enemies"></span></p>
+      <p><strong>Secrets:</strong> <span id="detail-secrets"></span></p>
+      <p><strong>Difficulty:</strong> <span id="detail-difficulty" class="difficulty-tag"></span></p>
+    </div>
+  </div>
+  
+  <!-- CORRECTED SCRIPT TAG -->
   <script src="campaign.js"></script>
 </body>
 </html>

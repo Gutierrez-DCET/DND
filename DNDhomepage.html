@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tabletop Nexus - Home</title>
+  <link rel="stylesheet" href="DNDHPsty.css" />
+</head>
+<body>
+  <!-- Ribbon Navigation -->
+  <div class="ribbon">
+    <nav class="nav-tabs">
+      <!-- UPDATED LINKS -->
+      <a href="info_campaigns.html">Campaigns</a>
+      <a href="info_characters.html">Characters</a>
+      <a href="info_articles.html">Articles</a>
+      <a href="info_tutorials.html">Tutorials</a>
+    </nav>
+    <div id="user-status" class="auth-buttons">
+      <button id="signInBtn">Sign In</button>
+      <button id="signUpBtn">Sign Up</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="homepage-container">
+    <h1>Welcome to Tabletop Nexus</h1>
+    <p>Select a tool to begin:</p>
+    <div class="button-container">
+      <a href="DNDcampaign.html" class="image-button">
+        <img src="https://images.squarespace-cdn.com/content/v1/5dadaf88e03a4e6bb69307dd/1579654815734-57U4NPCXYU6L20J9CESE/UA-Feature.jpg?format=1000w" alt="Create a Campaign" />
+        <span>Campaign Creator</span>
+      </a>
+      <a href="DNDcharacter.html" class="image-button">
+        <img src="https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/223772591/original/8fb16427f8b0e01ebcdd6f8d5f46086acff3c702/create-your-dnd-character.png" alt="Create a Character" />
+        <span>Character Creator</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal">
+    <div class="modal-content">
+      <span class="close">×</span>
+      <h2 id="authTitle">Sign In</h2>
+      <form id="authForm">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit" id="authSubmit">Sign In</button>
+      </form>
+    </div>
+  </div>
+  
+  <script src="dndscript.js"></script>
+</body>
+</html>
