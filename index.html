@@ -19,6 +19,7 @@
       <a href="info_tutorials.html">Tutorials</a>
     </nav>
     <div id="user-status" class="auth-buttons">
+      <!-- Content here will be managed by dndscript.js based on auth state -->
       <button id="signInBtn">Sign In</button>
       <button id="signUpBtn">Sign Up</button>
     </div>
@@ -67,13 +68,18 @@
       <button>Submit Comment</button>
     </div>
     <div class="social-buttons">
-      <a href="https://www.facebook.com/wyclef.gutierrez.2024/" target="_blank" class="icon-button"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://github.com/Gutierrez-DCET" target="_blank" class="icon-button"><i class="fab fa-github"></i></a>
-      <a href="https://discord.gg/bpNnBuHj" target="_blank" class="icon-button"><i class="fab fa-discord"></i></a>
+      <a href="https://www.facebook.com" target="_blank" class="icon-button"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://github.com" target="_blank" class="icon-button"><i class="fab fa-github"></i></a>
+      <a href="https://discord.com" target="_blank" class="icon-button"><i class="fab fa-discord"></i></a>
     </div>
     <p>&copy; 2024 Tabletop Nexus. All rights reserved.</p>
   </footer>
   
-  <script src="dndscript.js"></script>
+  <!-- Firebase SDKs -->
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"></script>
+  
+  <script type="module" src="dndscript.js"></script>
 </body>
 </html>
