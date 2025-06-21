@@ -44,11 +44,15 @@ const signUpBtn = document.getElementById('signUpBtn');
 signInBtn?.addEventListener('click', () => {
     authTitle.textContent = 'Sign In';
     authSubmit.textContent = 'Sign In';
+    // Ensure the forgot password link is visible for sign-in
+    document.querySelector('.forgot-password')?.style.display = 'block'; 
     authModal.style.display = 'block';
 });
 signUpBtn?.addEventListener('click', () => {
     authTitle.textContent = 'Sign Up';
     authSubmit.textContent = 'Sign Up';
+    // Hide forgot password link for sign-up
+    document.querySelector('.forgot-password')?.style.display = 'none';
     authModal.style.display = 'block';
 });
 closeBtn?.addEventListener('click', () => authModal.style.display = 'none');
@@ -101,6 +105,24 @@ function updateNavUI() {
             Logged in as ${user.email} (${user.isAdmin ? 'Admin' : 'User'}) 
             <button onclick="logoutUser()">Logout</button>
         `;
+    } else if (navArea) { // If no user, show sign in/up buttons
+        navArea.innerHTML = `
+            <button id="signInBtn">Sign In</button>
+            <button id="signUpBtn">Sign Up</button>
+        `;
+        // Re-attach event listeners as buttons are re-created
+        document.getElementById('signInBtn')?.addEventListener('click', () => {
+            authTitle.textContent = 'Sign In';
+            authSubmit.textContent = 'Sign In';
+            document.querySelector('.forgot-password')?.style.display = 'block';
+            authModal.style.display = 'block';
+        });
+        document.getElementById('signUpBtn')?.addEventListener('click', () => {
+            authTitle.textContent = 'Sign Up';
+            authSubmit.textContent = 'Sign Up';
+            document.querySelector('.forgot-password')?.style.display = 'none';
+            authModal.style.display = 'block';
+        });
     }
 }
 
@@ -117,7 +139,8 @@ window.onload = () => {
 };
 
 // Forgot Password Logic
-document.querySelector('.forgot-password')?.addEventListener('click', () => {
+document.querySelector('.forgot-password')?.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent default link behavior
     const email = prompt("Enter your registered email:");
 
     if (!email) return;
@@ -135,9 +158,29 @@ document.querySelector('.forgot-password')?.addEventListener('click', () => {
 const enemyOthersCheckbox = document.getElementById('enemy-others-checkbox');
 const enemyOthersText = document.getElementById('enemy-others-text');
 
-enemyOthersCheckbox.addEventListener('change', () => {
-  enemyOthersText.disabled = !enemyOthersCheckbox.checked;
-  if (!enemyOthersCheckbox.checked) {
-    enemyOthersText.value = '';
-  }
-});
+if (enemyOthersCheckbox && enemyOthersText) { // Added check if elements exist
+  enemyOthersCheckbox.addEventListener('change', () => {
+    enemyOthersText.disabled = !enemyOthersCheckbox.checked;
+    if (!enemyOthersCheckbox.checked) {
+      enemyOthersText.value = '';
+    }
+  });
+}
+
+// ===== Comment Submission Logic (Basic) =====
+const submitCommentBtn = document.getElementById('submit-comment-btn');
+const commentTextarea = document.getElementById('comment-textarea');
+
+if (submitCommentBtn && commentTextarea) {
+    submitCommentBtn.addEventListener('click', () => {
+        const comment = commentTextarea.value.trim();
+        if (comment) {
+            console.log("New comment submitted:", comment);
+            alert("Comment submitted successfully!");
+            commentTextarea.value = ''; // Clear the textarea
+            // In a real application, you would send this comment to a server.
+        } else {
+            alert("Please write something before submitting your comment.");
+        }
+    });
+}
