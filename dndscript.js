@@ -37,24 +37,8 @@ const authTitle = document.getElementById('authTitle');
 const authForm = document.getElementById('authForm');
 const authSubmit = document.getElementById('authSubmit');
 const closeBtn = document.querySelector('.modal .close');
-const signInBtn = document.getElementById('signInBtn');
-const signUpBtn = document.getElementById('signUpBtn');
 
-// Open modals
-signInBtn?.addEventListener('click', () => {
-    authTitle.textContent = 'Sign In';
-    authSubmit.textContent = 'Sign In';
-    // Ensure the forgot password link is visible for sign-in
-    document.querySelector('.forgot-password')?.style.display = 'block'; 
-    authModal.style.display = 'block';
-});
-signUpBtn?.addEventListener('click', () => {
-    authTitle.textContent = 'Sign Up';
-    authSubmit.textContent = 'Sign Up';
-    // Hide forgot password link for sign-up
-    document.querySelector('.forgot-password')?.style.display = 'none';
-    authModal.style.display = 'block';
-});
+// Event listener for closing the modal
 closeBtn?.addEventListener('click', () => authModal.style.display = 'none');
 window.addEventListener('click', e => {
     if (e.target === authModal) authModal.style.display = 'none';
@@ -95,42 +79,46 @@ authForm?.addEventListener('submit', e => {
     authForm.reset();
 });
 
-// Update UI on login
+// Update UI on login/logout
 function updateNavUI() {
     const user = JSON.parse(localStorage.getItem('currentUser'));
     const navArea = document.getElementById('user-status');
 
-    if (user && navArea) {
-        navArea.innerHTML = `
-            Logged in as ${user.email} (${user.isAdmin ? 'Admin' : 'User'}) 
-            <button onclick="logoutUser()">Logout</button>
-        `;
-    } else if (navArea) { // If no user, show sign in/up buttons
-        navArea.innerHTML = `
-            <button id="signInBtn">Sign In</button>
-            <button id="signUpBtn">Sign Up</button>
-        `;
-        // Re-attach event listeners as buttons are re-created
-        document.getElementById('signInBtn')?.addEventListener('click', () => {
-            authTitle.textContent = 'Sign In';
-            authSubmit.textContent = 'Sign In';
-            document.querySelector('.forgot-password')?.style.display = 'block';
-            authModal.style.display = 'block';
-        });
-        document.getElementById('signUpBtn')?.addEventListener('click', () => {
-            authTitle.textContent = 'Sign Up';
-            authSubmit.textContent = 'Sign Up';
-            document.querySelector('.forgot-password')?.style.display = 'none';
-            authModal.style.display = 'block';
-        });
+    if (navArea) { // Ensure navArea exists before proceeding
+        if (user) {
+            navArea.innerHTML = `
+                Logged in as ${user.email} (${user.isAdmin ? 'Admin' : 'User'})
+                <button id="logoutBtn">Logout</button>
+            `;
+            // Attach event listener to the newly created logout button
+            document.getElementById('logoutBtn')?.addEventListener('click', logoutUser);
+        } else { // If no user, show sign in/up buttons
+            navArea.innerHTML = `
+                <button id="signInBtn">Sign In</button>
+                <button id="signUpBtn">Sign Up</button>
+            `;
+            // Re-attach event listeners as buttons are re-created
+            document.getElementById('signInBtn')?.addEventListener('click', () => {
+                authTitle.textContent = 'Sign In';
+                authSubmit.textContent = 'Sign In';
+                document.querySelector('.forgot-password')?.style.display = 'block';
+                authModal.style.display = 'block';
+            });
+            document.getElementById('signUpBtn')?.addEventListener('click', () => {
+                authTitle.textContent = 'Sign Up';
+                authSubmit.textContent = 'Sign Up';
+                document.querySelector('.forgot-password')?.style.display = 'none';
+                authModal.style.display = 'block';
+            });
+        }
     }
 }
 
-// Logout
+// Logout function
 function logoutUser() {
     localStorage.removeItem('currentUser');
     alert('Logged out!');
-    location.reload();
+    updateNavUI(); // Update UI after logout
 }
 
 // Auto-update nav on load
