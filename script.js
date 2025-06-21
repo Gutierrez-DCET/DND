@@ -1,193 +1,262 @@
+// Ensure Firebase modules are globally available from the DNDcharacter.html script
+// This script will only run after Firebase is initialized in the HTML.
+const db = window.firestoreDb;
+const auth = window.firebaseAuth;
+const appId = window.appId; // Get the appId from the global scope
+let currentUserId = window.currentUserId; // Initial user ID from window global
+
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Element References for Character Creation
+    // DOM Element References
+    const openModalBtn = document.getElementById('open-character-modal-btn');
+    const closeModalBtn = document.getElementById('close-character-modal-btn');
+    const characterModal = document.getElementById('character-modal');
     const characterForm = document.getElementById('character-form');
-    const characterDisplay = document.getElementById('character-display');
-    const resetButton = document.getElementById('reset-character-btn');
+    const characterListDiv = document.getElementById('character-list');
+    const modalTitle = document.getElementById('modal-title');
+    const characterIdInput = document.getElementById('character-id');
+    const noCharactersMessage = document.getElementById('no-characters-message');
 
-    // DOM Element References for Campaign Modal
-    const addCampaignBtn = document.getElementById('add-campaign-btn');
-    const campaignModal = document.getElementById('campaign-modal');
-    const closeButton = document.querySelector('.modal .close-button');
-    const newCampaignForm = document.getElementById('new-campaign-form');
-    const campaignList = document.getElementById('campaign-list'); // To display created campaigns
+    // Custom Confirmation Modal Elements
+    const confirmationModal = document.getElementById('confirmation-modal');
+    const confirmationMessage = document.getElementById('confirmation-message');
+    const confirmYesBtn = document.getElementById('confirm-yes-btn');
+    const confirmNoBtn = document.getElementById('confirm-no-btn');
+    let confirmAction = null; // Stores the function to execute on 'Yes'
 
-    // Keys for localStorage
-    const CHARACTER_STORAGE_KEY = 'dndCharacterData';
-    const CAMPAIGN_STORAGE_KEY = 'dndCampaignsData'; // New key for campaigns
+    // --- Utility Functions ---
 
-    // Function to display character data on the page
-    const displayCharacter = (data) => {
-        if (!data) {
-            characterDisplay.classList.add('hidden');
-            return;
+    /**
+     * Shows the custom confirmation modal.
+     * @param {string} message - The message to display in the modal.
+     * @param {Function} onConfirm - The callback function to execute if 'Yes' is clicked.
+     */
+    const showConfirmationModal = (message, onConfirm) => {
+        confirmationMessage.textContent = message;
+        confirmAction = onConfirm; // Store the action to be performed
+        confirmationModal.classList.remove('hidden');
+    };
+
+    /**
+     * Hides the custom confirmation modal.
+     */
+    const hideConfirmationModal = () => {
+        confirmationModal.classList.add('hidden');
+        confirmAction = null; // Clear the action
+    };
+
+    // --- Modal Functions ---
+
+    /**
+     * Opens the character modal.
+     * If characterData is provided, it's for editing; otherwise, for creating.
+     * @param {Object|null} characterData - The character data to populate the form, or null for a new character.
+     */
+    const openCharacterModal = (characterData = null) => {
+        characterForm.reset(); // Clear the form
+        characterIdInput.value = ''; // Clear hidden ID input
+
+        if (characterData) {
+            // Populate form for editing
+            modalTitle.textContent = 'Edit Character';
+            characterIdInput.value = characterData.id; // Set hidden ID
+            document.getElementById('character-name').value = characterData.name;
+            document.getElementById('character-class').value = characterData.class;
+            document.getElementById('character-race').value = characterData.race;
+            document.getElementById('character-background').value = characterData.background;
+        } else {
+            // Setup for new character
+            modalTitle.textContent = 'Create New Character';
         }
-        
-        document.getElementById('display-name').textContent = data.name;
-        document.getElementById('display-class').textContent = data.class;
-        document.getElementById('display-race').textContent = data.race;
-        document.getElementById('display-background').textContent = data.background;
-
-        // Show the display card
-        characterDisplay.classList.remove('hidden');
+        characterModal.classList.remove('hidden');
     };
 
-    // Function to populate the form with existing character data
-    const populateForm = (data) => {
-        if (!data) return;
-        document.getElementById('character-name').value = data.name;
-        document.getElementById('character-class').value = data.class;
-        document.getElementById('character-race').value = data.race;
-        document.getElementById('character-background').value = data.background;
+    /**
+     * Closes the character modal.
+     */
+    const closeCharacterModal = () => {
+        characterModal.classList.add('hidden');
     };
 
-    // Function to display campaigns
-    const displayCampaigns = () => {
-        campaignList.innerHTML = ''; // Clear existing campaigns
-        const campaigns = JSON.parse(localStorage.getItem(CAMPAIGN_STORAGE_KEY)) || [];
-        
-        if (campaigns.length === 0) {
-            campaignList.innerHTML = '<p>No campaigns created yet. Click "Add New Campaign" to start!</p>';
-            return;
+    // --- Firestore Operations ---
+
+    /**
+     * Gets the Firestore collection reference for characters for the current user.
+     * @returns {import('firebase/firestore').CollectionReference} - The collection reference.
+     */
+    const getCharactersCollection = () => {
+        // Use the currentUserId obtained from Firebase auth.
+        // If currentUserId is still null (e.g., auth not ready), use a fallback or handle error.
+        // For this app, we ensure script.js only loads after auth is ready, so currentUserId should be set.
+        if (!currentUserId) {
+            console.error("User ID is not available. Cannot get Firestore collection.");
+            // Generate a random ID if auth somehow fails, but ideally, this shouldn't happen.
+            currentUserId = auth.currentUser?.uid || crypto.randomUUID();
+            console.warn("Using a fallback user ID:", currentUserId);
         }
-
-        campaigns.forEach((campaign, index) => {
-            const campaignCard = document.createElement('div');
-            campaignCard.classList.add('campaign-card'); // Add a class for styling
-
-            campaignCard.innerHTML = `
-                <h3>${campaign.name}</h3>
-                <p><strong>Status:</strong> <span class="status-${campaign.status.toLowerCase().replace(/\s/g, '-')}">${campaign.status}</span></p>
-                <p><strong>Difficulty:</strong> <span class="difficulty-${campaign.difficulty.toLowerCase()}">${campaign.difficulty}</span></p>
-                <button class="edit-campaign-btn" data-index="${index}"><i class="fas fa-pencil-alt"></i></button>
-                <button class="delete-campaign-btn" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
-            `;
-            campaignList.appendChild(campaignCard);
-        });
-
-        // Add event listeners for edit and delete buttons on newly created campaign cards
-        document.querySelectorAll('.edit-campaign-btn').forEach(button => {
-            button.addEventListener('click', (event) => editCampaign(event.target.dataset.index));
-        });
-        document.querySelectorAll('.delete-campaign-btn').forEach(button => {
-            button.addEventListener('click', (event) => deleteCampaign(event.target.dataset.index));
-        });
+        // Public data: /artifacts/{appId}/public/data/characters
+        return collection(db, `artifacts/${appId}/public/data/characters`);
     };
 
-    // Function to save a new campaign
-    const saveCampaign = (campaignData) => {
-        let campaigns = JSON.parse(localStorage.getItem(CAMPAIGN_STORAGE_KEY)) || [];
-        campaigns.push(campaignData);
-        localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaigns));
-        displayCampaigns(); // Re-render campaigns after saving
-    };
-
-    // Function to edit a campaign (basic implementation - could open modal with pre-filled data)
-    const editCampaign = (index) => {
-        let campaigns = JSON.parse(localStorage.getItem(CAMPAIGN_STORAGE_KEY));
-        if (campaigns && campaigns[index]) {
-            // For now, let's just log and you can expand this to open the modal
-            console.log('Editing campaign:', campaigns[index]);
-            alert(`Editing campaign: ${campaigns[index].name}. (Functionality to open modal with pre-filled data not fully implemented yet.)`);
-            // In a full implementation, you would populate the modal form with campaigns[index]
-            // and change the form submission to update instead of add.
-        }
-    };
-
-    // Function to delete a campaign
-    const deleteCampaign = (index) => {
-        if (confirm('Are you sure you want to delete this campaign?')) {
-            let campaigns = JSON.parse(localStorage.getItem(CAMPAIGN_STORAGE_KEY));
-            if (campaigns && campaigns[index]) {
-                campaigns.splice(index, 1); // Remove the campaign at the given index
-                localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaigns));
-                displayCampaigns(); // Re-render campaigns after deletion
+    /**
+     * Saves a character to Firestore (adds new or updates existing).
+     * @param {Object} characterData - The character data to save.
+     * @param {string|null} characterId - The ID of the character if updating, null if new.
+     */
+    const saveCharacter = async (characterData, characterId = null) => {
+        try {
+            const charactersCollection = getCharactersCollection();
+            if (characterId) {
+                // Update existing character
+                const charDocRef = doc(charactersCollection, characterId);
+                await updateDoc(charDocRef, characterData);
+                console.log("Character updated with ID:", characterId);
+            } else {
+                // Add new character
+                const docRef = await addDoc(charactersCollection, characterData);
+                console.log("New character added with ID:", docRef.id);
             }
+            closeCharacterModal(); // Close modal after successful save
+        } catch (e) {
+            console.error("Error saving character: ", e);
+            // In a real app, you might show a user-friendly error message here
+            alert("Failed to save character. Please try again."); // Using alert for simplicity, but a custom modal is better.
         }
     };
 
+    /**
+     * Deletes a character from Firestore.
+     * @param {string} characterId - The ID of the character to delete.
+     */
+    const deleteCharacter = async (characterId) => {
+        try {
+            const charactersCollection = getCharactersCollection();
+            await deleteDoc(doc(charactersCollection, characterId));
+            console.log("Character deleted with ID:", characterId);
+        } catch (e) {
+            console.error("Error deleting character: ", e);
+            alert("Failed to delete character. Please try again."); // Using alert for simplicity, but a custom modal is better.
+        }
+    };
+
+    /**
+     * Renders a single character card.
+     * @param {Object} character - The character object with an 'id' property.
+     * @returns {HTMLElement} - The character card element.
+     */
+    const renderCharacterCard = (character) => {
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        card.setAttribute('data-id', character.id); // Store ID on the element
+
+        card.innerHTML = `
+            <h3>${character.name}</h3>
+            <p><strong>Class:</strong> ${character.class}</p>
+            <p><strong>Race:</strong> ${character.race}</p>
+            <p><strong>Background:</strong> ${character.background}</p>
+            <div class="character-card-actions">
+                <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                <button class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
+            </div>
+        `;
+
+        // Add event listeners for edit and delete buttons on the card
+        card.querySelector('.edit-btn').addEventListener('click', () => {
+            openCharacterModal(character); // Open modal with this character's data
+        });
+
+        card.querySelector('.delete-btn').addEventListener('click', () => {
+            showConfirmationModal(`Are you sure you want to delete ${character.name}?`, () => {
+                deleteCharacter(character.id);
+                hideConfirmationModal(); // Hide modal after action
+            });
+        });
+
+        return card;
+    };
+
+    /**
+     * Fetches and displays all characters from Firestore in real-time.
+     */
+    const loadCharacters = () => {
+        if (!db || !currentUserId) {
+            console.warn("Firestore or User ID not available yet. Skipping character load.");
+            noCharactersMessage.classList.remove('hidden'); // Show message if characters can't load
+            return;
+        }
+
+        const charactersCollection = getCharactersCollection();
+
+        // Use onSnapshot for real-time updates
+        onSnapshot(charactersCollection, (snapshot) => {
+            characterListDiv.innerHTML = ''; // Clear current list
+
+            if (snapshot.empty) {
+                noCharactersMessage.classList.remove('hidden');
+            } else {
+                noCharactersMessage.classList.add('hidden');
+                snapshot.forEach((doc) => {
+                    const character = { id: doc.id, ...doc.data() };
+                    const card = renderCharacterCard(character);
+                    characterListDiv.appendChild(card);
+                });
+            }
+        }, (error) => {
+            console.error("Error fetching characters:", error);
+            characterListDiv.innerHTML = '<p style="color: red;">Error loading characters. Please refresh the page.</p>';
+            noCharactersMessage.classList.add('hidden'); // Hide empty message if there was an error
+        });
+    };
 
     // --- Event Listeners ---
 
-    // 1. Handle Character Form Submission
+    // Open Modal button
+    openModalBtn.addEventListener('click', () => openCharacterModal());
+
+    // Close Modal button
+    closeModalBtn.addEventListener('click', closeCharacterModal);
+
+    // Close modal if overlay is clicked (but not the content itself)
+    characterModal.addEventListener('click', (event) => {
+        if (event.target === characterModal) {
+            closeCharacterModal();
+        }
+    });
+
+    // Handle form submission (Create/Update character)
     characterForm.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        // Create a character object from form values
+        const characterId = characterIdInput.value || null; // Get ID if editing
         const characterData = {
             name: document.getElementById('character-name').value,
             class: document.getElementById('character-class').value,
             race: document.getElementById('character-race').value,
-            background: document.getElementById('character-background').value
+            background: document.getElementById('character-background').value,
+            // Add a timestamp for ordering, useful for "last modified" or creation order
+            timestamp: new Date().toISOString()
         };
 
-        // Save to localStorage
-        localStorage.setItem(CHARACTER_STORAGE_KEY, JSON.stringify(characterData));
-
-        // Display the new character data
-        displayCharacter(characterData);
+        saveCharacter(characterData, characterId);
     });
 
-    // 2. Handle Character Reset
-    resetButton.addEventListener('click', () => {
-        // Confirmation dialog
-        if (confirm('Are you sure you want to delete this character? This action cannot be undone.')) {
-            // Remove from localStorage
-            localStorage.removeItem(CHARACTER_STORAGE_KEY);
-
-            // Reset the form fields
-            characterForm.reset();
-
-            // Hide the character display card
-            characterDisplay.classList.add('hidden');
+    // Confirmation modal button listeners
+    confirmYesBtn.addEventListener('click', () => {
+        if (confirmAction) {
+            confirmAction(); // Execute the stored action
         }
     });
 
-    // 3. Handle "Add New Campaign" button click (to open modal)
-    addCampaignBtn.addEventListener('click', () => {
-        campaignModal.classList.remove('hidden');
-    });
+    confirmNoBtn.addEventListener('click', hideConfirmationModal);
 
-    // 4. Handle modal close button click
-    closeButton.addEventListener('click', () => {
-        campaignModal.classList.add('hidden');
-        newCampaignForm.reset(); // Optionally reset the form when closing
-    });
-
-    // 5. Handle clicks outside the modal content to close it
-    window.addEventListener('click', (event) => {
-        if (event.target === campaignModal) {
-            campaignModal.classList.add('hidden');
-            newCampaignForm.reset(); // Optionally reset the form when closing
-        }
-    });
-
-    // 6. Handle New Campaign Form Submission
-    newCampaignForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        const campaignData = {
-            name: document.getElementById('campaign-name').value,
-            status: document.getElementById('campaign-status').value,
-            difficulty: document.getElementById('campaign-difficulty').value
-        };
-
-        saveCampaign(campaignData);
-        campaignModal.classList.add('hidden'); // Hide modal after submission
-        newCampaignForm.reset(); // Reset form fields
-    });
-
-
-    // --- Initial Page Load ---
-
-    // Check for saved character data when the page loads
-    const savedCharacterDataJSON = localStorage.getItem(CHARACTER_STORAGE_KEY);
-    if (savedCharacterDataJSON) {
-        const savedCharacterData = JSON.parse(savedCharacterDataJSON);
-        // If data exists, display it and populate the form for editing
-        displayCharacter(savedCharacterData);
-        populateForm(savedCharacterData);
+    // Initial load: Ensure characters are loaded once Firebase is ready
+    // The `onAuthStateChanged` listener in DNDcharacter.html ensures this script loads
+    // only when Firebase is initialized and authenticated, so we can directly call loadCharacters here.
+    if (db && currentUserId) {
+        loadCharacters();
+    } else {
+        // Fallback for development if loaded directly without the main HTML's Firebase setup
+        console.warn("script.js loaded before Firebase was fully ready. Will attempt to load characters once Firebase globals are available.");
+        // You might set up a polling or a custom event listener here in a more complex setup
+        // For this example, the DNDcharacter.html ensures the proper loading order.
     }
-
-    // Load and display campaigns on page load
-    displayCampaigns();
 });
