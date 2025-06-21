@@ -1,61 +1,89 @@
+/* General Body Styles */
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #1e1e2f;
+    font-family: 'Segoe UI', 'Inter', sans-serif; /* Added Inter for a modern look */
+    background: linear-gradient(135deg, #1a1a2e 0%, #2c2c4d 100%); /* Subtle gradient background */
     color: #e0e0e0;
     margin: 0;
     padding: 40px 20px;
-    padding-bottom: 80px; /* Added padding to ensure footer separation */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
+/* Main Container */
 .container {
-    max-width: 800px;
+    max-width: 900px; /* Slightly wider container */
     margin: 40px auto;
     padding: 30px;
     background-color: #2a2a3e;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border-radius: 15px; /* More rounded corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
     border: 1px solid #4f4f7a;
     text-align: center;
-    margin-bottom: 40px; /* Added margin to separate from the footer */
+    margin-bottom: 40px;
+    position: relative; /* For z-index context */
+    z-index: 1; /* Ensure container is above potential background effects */
 }
 
-h1 {
+/* Headings */
+h1, h2 {
     color: #fff;
     margin-bottom: 30px;
+    font-size: 2.5em; /* Slightly larger headings */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Text shadow for depth */
 }
 
+/* Add Campaign Button */
 .add-campaign-btn {
-    padding: 12px 24px;
-    font-size: 1.1em;
+    display: inline-flex; /* Align icon and text */
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+    padding: 15px 30px; /* More padding */
+    font-size: 1.2em; /* Larger font */
     font-weight: bold;
-    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%); /* Vibrant gradient */
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px; /* More rounded */
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Initial shadow */
+    position: relative;
+    overflow: hidden; /* For pseudo-element effects */
+    text-transform: uppercase; /* Uppercase text */
+    letter-spacing: 0.05em; /* Spacing between letters */
 }
 
 .add-campaign-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(65, 123, 237, 0.4);
+    transform: translateY(-3px) scale(1.02); /* Lift and slightly enlarge */
+    box-shadow: 0 8px 20px rgba(65, 123, 237, 0.6); /* More prominent shadow */
 }
 
+.add-campaign-btn i {
+    font-size: 1.1em; /* Icon size */
+}
+
+/* Back Button */
 .back-button {
     position: absolute;
     top: 20px;
     left: 20px;
     background-color: #444;
     color: white;
-    padding: 8px 16px;
+    padding: 10px 18px; /* Slightly more padding */
     text-decoration: none;
     border-radius: 8px;
+    font-size: 15px;
     transition: background-color 0.3s, transform 0.2s;
+    z-index: 10; /* Ensure it's above other elements */
 }
 
 .back-button:hover {
     background-color: #666;
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.05);
 }
 
 /* Modal Styles */
@@ -68,107 +96,278 @@ h1 {
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+    backdrop-filter: blur(8px); /* Stronger blur */
+    animation: fadeIn 0.3s ease-out; /* Fade in animation */
 }
 
 .modal-content {
     background-color: #2a2a3e;
-    margin: 5% auto;
-    padding: 30px;
-    border-radius: 12px;
+    margin: 3% auto; /* Move slightly up from center */
+    padding: 35px; /* More padding */
+    border-radius: 18px; /* Even more rounded */
     border: 1px solid #4f4f7a;
     width: 90%;
-    max-width: 550px;
+    max-width: 600px; /* Wider modal for content */
     position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6); /* Deeper shadow */
+    animation: slideIn 0.4s ease-out; /* Slide in animation */
 }
 
 .close {
     position: absolute;
     top: 15px;
-    right: 20px;
+    right: 25px; /* Move slightly from edge */
     color: #aaa;
-    font-size: 28px;
+    font-size: 32px; /* Larger close button */
     font-weight: bold;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: color 0.3s, transform 0.2s;
 }
-.close:hover { color: #fff; }
+.close:hover {
+    color: #fff;
+    transform: rotate(90deg); /* Rotate on hover */
+}
 
-.modal-content h2 { color: #fff; text-align: center; margin-bottom: 25px; }
-.modal-content label { display: block; margin-bottom: 8px; font-weight: bold; color: #a0a0c0; text-align: left; }
+.modal-content h2 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2em; /* Match main headings */
+    border-bottom: 2px solid #4f4f7a; /* Underline effect */
+    padding-bottom: 15px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #a0a0c0;
+    text-align: left;
+    font-size: 1.05em; /* Slightly larger label text */
+}
+
 .modal-content input[type="text"],
 .modal-content textarea,
 .modal-content select {
-    width: 100%; padding: 12px; margin-bottom: 15px;
-    background-color: #1e1e2f; color: #fff; border: 1px solid #4f4f7a;
-    border-radius: 8px; box-sizing: border-box; font-size: 1em;
+    width: 100%;
+    padding: 14px; /* More padding */
+    margin-bottom: 20px; /* More spacing */
+    background-color: #1e1e2f;
+    color: #fff;
+    border: 1px solid #4f4f7a;
+    border-radius: 10px; /* More rounded */
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+.modal-content input[type="text"]:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
+    outline: none;
+    border-color: #7a7acc;
+    box-shadow: 0 0 0 4px rgba(122, 122, 204, 0.4); /* Stronger focus glow */
+    background-color: #252538; /* Slightly lighter on focus */
 }
 
 fieldset {
     border: 1px solid #4f4f7a;
-    padding: 15px; margin-bottom: 20px; border-radius: 8px;
+    padding: 20px; /* More padding */
+    margin-bottom: 25px; /* More spacing */
+    border-radius: 12px; /* More rounded */
+    background-color: #202030; /* Slightly different background for fieldsets */
 }
-legend { color: #a0a0c0; font-weight: bold; padding: 0 10px; }
+legend {
+    color: #a0a0c0;
+    font-weight: bold;
+    padding: 0 10px;
+    font-size: 1.1em;
+    background-color: #2a2a3e; /* Match container background */
+    border-radius: 5px;
+    padding: 5px 12px;
+    border: 1px solid #4f4f7a;
+}
 
-.checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; text-align: left;}
-.checkbox-grid label { display: flex; align-items: center; gap: 8px; font-weight: normal; color: #e0e0e0;}
-.others-label input[type="text"] { width: 120px; margin-left: 5px; padding: 6px; font-size: 0.9em; }
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* More flexible grid */
+    gap: 15px; /* Increased gap */
+    text-align: left;
+    padding-top: 10px;
+}
+.checkbox-grid label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: normal;
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.checkbox-grid label:hover {
+    color: #fff;
+}
+.checkbox-grid input[type="checkbox"] {
+    width: 20px; /* Standardize checkbox size */
+    height: 20px;
+    accent-color: #6a11cb; /* Highlight checkbox color */
+    margin-bottom: 0; /* Remove extra margin */
+}
 
-.modal-content button[type="submit"] { width: 100%; margin-top: 10px; }
+.others-label input[type="text"] {
+    width: 100%; /* Full width for others input */
+    margin-top: 5px;
+    margin-left: 0;
+    padding: 8px;
+    font-size: 0.9em;
+    background-color: #1a1a2a;
+}
+
+.modal-content button[type="submit"] {
+    width: 100%;
+    margin-top: 20px; /* More margin */
+    padding: 15px; /* More padding */
+    font-size: 1.2em; /* Larger font */
+    border-radius: 10px; /* More rounded */
+}
 
 /* Campaign Cards */
 .campaign-list {
     margin-top: 40px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    gap: 30px; /* Increased gap between cards */
     text-align: left;
+    padding: 10px;
 }
 
 .campaign-card {
     background-color: #3a3a52;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    border-radius: 15px; /* More rounded */
+    padding: 25px; /* More padding */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Deeper shadow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid #5a5a7f;
     position: relative;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px; /* Ensure consistent card height */
 }
-.campaign-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); }
+.campaign-card:hover {
+    transform: translateY(-8px); /* Lift higher on hover */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); /* Stronger hover shadow */
+}
 
-.campaign-card h3 { margin: 0 0 10px; color: #fff; }
-.campaign-card p { margin: 0; color: #b0b0d0; font-size: 0.9em; }
-.difficulty-tag { font-weight: bold; font-size: 0.9em; padding: 4px 10px; border-radius: 20px; color: #fff; }
+.campaign-card h3 {
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: 1.6em; /* Larger title */
+    border-bottom: 1px solid #5a5a7f;
+    padding-bottom: 8px;
+}
+.campaign-card p {
+    margin: 5px 0; /* Adjust spacing */
+    color: #b0b0d0;
+    font-size: 0.95em;
+}
+.difficulty-tag {
+    font-weight: bold;
+    font-size: 0.9em;
+    padding: 6px 12px; /* More padding */
+    border-radius: 25px; /* More pill-like */
+    color: #fff;
+    margin-top: 10px;
+    display: inline-block; /* Ensure padding applies correctly */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for tags */
+}
+/* Difficulty tag colors - already good, maintain */
 .difficulty-Easy { background-color: #2e7d32; }
 .difficulty-Medium { background-color: #f57c00; }
 .difficulty-Hard { background-color: #d32f2f; }
 .difficulty-Nightmare { background-color: #6a11cb; }
 
-.card-actions { position: absolute; top: 15px; right: 15px; display: flex; gap: 10px; }
-.card-actions button { background: none; border: none; color: #a0a0c0; cursor: pointer; font-size: 1.1em; padding: 5px; transition: color 0.3s; }
-.card-actions button:hover { color: #fff; }
+
+.card-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 8px; /* Slightly smaller gap for icons */
+}
+.card-actions button {
+    background: none;
+    border: none;
+    color: #a0a0c0;
+    cursor: pointer;
+    font-size: 1.2em; /* Larger icons */
+    padding: 6px; /* Padding for easier clicks */
+    transition: color 0.3s, transform 0.2s;
+    border-radius: 50%; /* Make action buttons circular */
+    width: 35px; /* Fixed size */
+    height: 35px; /* Fixed size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-actions button:hover {
+    color: #fff;
+    transform: scale(1.1);
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+}
 
 /* Detail Modal */
-.detail-modal-content p { line-height: 1.6; }
-.detail-modal-content strong { color: #a0a0c0; }
-#detail-description { color: #e0e0e0; font-style: italic; margin-top: -10px; display: block; }
+.detail-modal-content {
+    text-align: left; /* Align text left for readability */
+}
+.detail-modal-content p {
+    line-height: 1.7; /* Increased line height */
+    margin-bottom: 15px; /* Spacing for paragraphs */
+    font-size: 1.05em;
+}
+.detail-modal-content strong {
+    color: #a0a0c0;
+    display: inline-block; /* Helps with alignment */
+    min-width: 100px; /* Align colons */
+}
+#detail-description {
+    color: #e0e0e0;
+    font-style: italic;
+    margin-top: 5px; /* Adjust margin */
+    display: block;
+    background-color: #202030; /* Background for description */
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #3a3a52;
+}
 
-/* === Styles for Footer (Copied from info-page-style.css for consistency) === */
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* === Styles for Footer === */
 .footer {
     background-color: #1a1a2e;
     padding: 40px 20px;
-    margin-top: 80px; /* Add margin to separate from content above */
+    margin-top: auto; /* Push footer to the bottom */
     border-top: 1px solid #333;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centers items horizontally */
+    align-items: center;
     gap: 30px;
     color: #ccc;
-    width: 100%; /* Ensure footer spans full width */
-    box-sizing: border-box; /* Include padding in width calculation */
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1; /* Ensure footer is above background effects */
 }
 
 .footer p {
@@ -182,20 +381,21 @@ legend { color: #a0a0c0; font-weight: bold; padding: 0 10px; }
     padding: 30px;
     border-radius: 15px;
     width: 100%;
-    max-width: 600px; /* Limits the max width, but allows shrinking on small screens */
+    max-width: 600px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     text-align: center;
-    box-sizing: border-box; /* Include padding in width calculation */
+    box-sizing: border-box;
 }
 
 .comments-section h3 {
     font-size: 1.8em;
     color: #4CAF50;
     margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
 
 .comments-section textarea {
-    width: calc(100% - 24px); /* Adjusted for padding */
+    width: calc(100% - 24px);
     min-height: 100px;
     padding: 12px;
     border: 1px solid #555;
@@ -236,7 +436,7 @@ legend { color: #a0a0c0; font-weight: bold; padding: 0 10px; }
 
 .social-buttons {
     display: flex;
-    justify-content: center; /* Ensure buttons are centered within their container */
+    justify-content: center;
     gap: 25px;
     margin-top: 25px;
 }
@@ -272,4 +472,101 @@ legend { color: #a0a0c0; font-weight: bold; padding: 0 10px; }
 
 .icon-button:hover .fa-discord {
     color: #7289DA;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 25px;
+    }
+
+    h1, h2 {
+        font-size: 2em;
+    }
+
+    .modal-content {
+        padding: 25px;
+        margin: 5% auto;
+    }
+
+    .modal-content h2 {
+        font-size: 1.6em;
+    }
+
+    .checkbox-grid {
+        grid-template-columns: 1fr; /* Stack checkboxes on smaller screens */
+        gap: 10px;
+    }
+
+    .campaign-list {
+        grid-template-columns: 1fr; /* Stack campaign cards */
+        gap: 20px;
+    }
+
+    .campaign-card {
+        min-height: auto; /* Allow height to adjust */
+    }
+
+    .back-button {
+        top: 15px;
+        left: 15px;
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .add-campaign-btn {
+        padding: 12px 20px;
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .container {
+        padding: 15px;
+        margin: 20px auto;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .add-campaign-btn {
+        font-size: 1em;
+        padding: 10px 15px;
+    }
+
+    .modal-content {
+        padding: 15px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.4em;
+    }
+
+    .modal-content label {
+        font-size: 0.95em;
+    }
+
+    .modal-content input, .modal-content textarea, .modal-content select {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
+    .comments-section {
+        padding: 20px;
+    }
+
+    .social-buttons {
+        gap: 15px;
+    }
+
+    .icon-button {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5em;
+    }
 }
