@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Your D&D Character</title>
     <link rel="stylesheet" href="dndstyles.css">
-    <!-- Font Awesome for social media icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -58,7 +57,44 @@
         </div>
     </div>
 
-    <!-- Footer Section -->
+    <div class="container campaign-section">
+        <h2>Your Campaigns</h2>
+        <button id="add-campaign-btn" class="add-campaign-button">+ Add New Campaign</button>
+        <div id="campaign-list">
+            </div>
+    </div>
+
+    <div id="campaign-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Create New Campaign</h2>
+            <form id="new-campaign-form">
+                <div class="form-group">
+                    <label for="campaign-name">Campaign Name:</label>
+                    <input type="text" id="campaign-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="campaign-status">Status:</label>
+                    <select id="campaign-status" required>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Planned">Planned</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="campaign-difficulty">Difficulty:</label>
+                    <select id="campaign-difficulty" required>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <button type="submit">Save Campaign</button>
+            </form>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="comments-section">
             <h3>Leave a Comment</h3>
