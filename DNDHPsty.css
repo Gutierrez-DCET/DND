@@ -190,13 +190,19 @@ p {
     text-align: right;
     font-size: 0.9em;
     margin-bottom: 10px;
-    text-decoration: none;
-    color: #4CAF50;
+    /* text-decoration: none; This was already handled by the <a> tag within it */
+    /* color: #4CAF50; This was already handled by the <a> tag within it */
 }
 
-.forgot-password:hover {
+.forgot-password a { /* Added specific styling for the anchor tag inside forgot-password */
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
     text-decoration: underline;
 }
+
 
 /* === New Styles for About Section === */
 .about-section {
