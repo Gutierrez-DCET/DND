@@ -4,10 +4,11 @@ body {
     color: #e0e0e0;
     margin: 0;
     padding: 40px 20px;
-    display: flex;
-    flex-direction: column; /* Added to allow stacking of content and footer */
-    justify-content: flex-start; /* Align to top */
-    align-items: center; /* Center horizontally */
+    /* Removed flex properties from body to allow standard block layout */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: flex-start; */
+    /* align-items: center; */
     min-height: 100vh;
     padding-bottom: 80px; /* Added padding to ensure footer separation */
 }
@@ -20,7 +21,7 @@ body {
     width: 100%;
     max-width: 500px;
     border: 1px solid #4f4f7a;
-    margin-bottom: 40px; /* Add margin to separate from the footer */
+    margin: 0 auto 40px auto; /* Centered horizontally with margin-bottom */
 }
 
 h1 {
