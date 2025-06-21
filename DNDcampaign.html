@@ -103,67 +103,7 @@
       <p>&copy; 2024 Tabletop Nexus. All rights reserved.</p>
   </footer>
 
-  <!-- Firebase SDK Imports and Initialization -->
-  <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-      import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      import { getFirestore, collection, doc, addDoc, getDoc, updateDoc, deleteDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-      // Firebase configuration and initialization (global for access in campaign.js)
-      const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-      let app;
-      let db;
-      let auth;
-      let currentUserId = null;
-
-      // Initialize Firebase and set up authentication
-      try {
-          app = initializeApp(firebaseConfig);
-          db = getFirestore(app);
-          auth = getAuth(app);
-
-          // Listen for authentication state changes
-          onAuthStateChanged(auth, async (user) => {
-              if (user) {
-                  // User is signed in.
-                  currentUserId = user.uid;
-                  console.log("User signed in:", currentUserId);
-                  // Ensure the script can access these globals after auth is ready
-                  window.firebaseApp = app;
-                  window.firestoreDb = db;
-                  window.firebaseAuth = auth;
-                  window.currentUserId = currentUserId;
-                  window.appId = appId; // Pass appId to the global scope
-
-                  // Load the main script (campaign.js) only after Firebase is ready
-                  const script = document.createElement('script');
-                  script.src = 'campaign.js';
-                  script.type = 'module'; // Ensure it's treated as a module
-                  document.body.appendChild(script);
-
-              } else {
-                  // User is signed out, or not yet signed in.
-                  console.log("No user signed in. Attempting anonymous sign-in...");
-                  try {
-                      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                          await signInWithCustomToken(auth, __initial_auth_token);
-                          console.log("Signed in with custom token.");
-                      } else {
-                          await signInAnonymously(auth);
-                          console.log("Signed in anonymously.");
-                      }
-                  } catch (error) {
-                      console.error("Firebase Auth Error:", error);
-                  }
-              }
-          });
-      } catch (error) {
-          console.error("Failed to initialize Firebase:", error);
-          // Potentially show an error message on the page if Firebase fails to load
-          document.getElementById('campaign-list').innerHTML = '<p style="color: red;">Error: Failed to load campaign data. Please try again.</p>';
-      }
-  </script>
+  <!-- CORRECTED SCRIPT TAG -->
+  <script src="campaign.js"></script>
 </body>
 </html>
