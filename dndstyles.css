@@ -5,6 +5,7 @@ body {
     margin: 0;
     padding: 40px 20px;
     /* Removed flex properties from body to allow standard block layout */
+    /* These were commented out, but removing them entirely is safer to ensure no unexpected flex behavior */
     /* display: flex; */
     /* flex-direction: column; */
     /* justify-content: flex-start; */
@@ -158,6 +159,8 @@ button:hover {
     color: #ccc;
     width: 100%; /* Ensure footer spans full width */
     box-sizing: border-box; /* Include padding in width calculation */
+    margin-left: auto; /* Ensure horizontal centering */
+    margin-right: auto; /* Ensure horizontal centering */
 }
 
 .footer p {
