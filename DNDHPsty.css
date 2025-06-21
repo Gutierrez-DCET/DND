@@ -5,6 +5,7 @@ body {
     color: #fff;
     text-align: center;
     padding: 50px 20px;
+    padding-bottom: 80px; /* Increased padding at the bottom to ensure footer separation */
 }
 
 .homepage-container {
@@ -27,7 +28,7 @@ p {
     justify-content: center;
     flex-wrap: wrap;
     gap: 60px; /* was 40px */
-    margin-bottom: 60px; /* Added margin to separate from new section */
+    margin-bottom: 80px; /* Increased margin to further separate from the about section */
 }
 
 /* === New Modern Image Button Styles Start === */
@@ -203,7 +204,7 @@ p {
     background-color: #2a2a3e;
     padding: 40px;
     border-radius: 15px;
-    margin: 60px auto;
+    margin: 60px auto; /* Provides significant vertical separation */
     max-width: 800px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     text-align: left; /* Align text within this section to the left */
@@ -227,12 +228,13 @@ p {
 .footer {
     background-color: #1a1a2e;
     padding: 40px 20px;
-    margin-top: 80px; /* Add margin to separate from content */
+    margin-top: 80px; /* Add margin to separate from content above */
     border-top: 1px solid #333;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    color: #ccc; /* Ensure footer text is visible */
 }
 
 .footer p {
@@ -260,14 +262,22 @@ p {
 .comments-section textarea {
     width: calc(100% - 20px); /* Adjust for padding */
     min-height: 100px;
-    padding: 10px;
-    border: 1px solid #444;
+    padding: 12px; /* Slightly more padding */
+    border: 1px solid #555; /* Darker border */
     border-radius: 8px;
     background-color: #1e1e2f;
     color: #eee;
     font-family: 'Segoe UI', sans-serif;
     resize: vertical;
     margin-bottom: 15px;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.comments-section textarea:focus {
+    outline: none;
+    border-color: #4CAF50; /* Highlight border on focus */
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3); /* Subtle glow on focus */
 }
 
 .comments-section button {
@@ -279,43 +289,43 @@ p {
     cursor: pointer;
     font-size: 1em;
     font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Add shadow to button */
 }
 
 .comments-section button:hover {
     background-color: #45a049;
     transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4); /* Stronger shadow on hover */
 }
 
 .social-buttons {
     display: flex;
-    gap: 20px;
-    margin-top: 20px;
+    gap: 25px; /* Slightly increased gap */
+    margin-top: 25px; /* Adjusted margin */
 }
 
 .icon-button {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 50px;
-    height: 50px;
+    width: 55px; /* Slightly larger buttons */
+    height: 55px; /* Slightly larger buttons */
     background-color: #333;
     color: white;
     border-radius: 50%;
-    font-size: 1.5em;
+    font-size: 1.8em; /* Larger icons */
     text-decoration: none;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .icon-button:hover {
-    transform: translateY(-3px) scale(1.05);
+    transform: translateY(-3px) scale(1.08); /* More pronounced lift and scale */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4); /* Stronger shadow on hover */
 }
 
-.icon-button .fab {
-    transition: color 0.3s ease;
-}
-
+/* Specific hover colors for social icons */
 .icon-button:hover .fa-facebook-f {
     color: #1877F2; /* Facebook blue */
 }
