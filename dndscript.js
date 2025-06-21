@@ -84,7 +84,7 @@ function updateNavUI() {
     const user = JSON.parse(localStorage.getItem('currentUser'));
     const navArea = document.getElementById('user-status');
 
-    if (navArea) { // Ensure navArea exists before proceeding
+    if (navArea) {
         if (user) {
             navArea.innerHTML = `
                 Logged in as ${user.email} (${user.isAdmin ? 'Admin' : 'User'})
@@ -92,26 +92,35 @@ function updateNavUI() {
             `;
             // Attach event listener to the newly created logout button
             document.getElementById('logoutBtn')?.addEventListener('click', logoutUser);
-        } else { // If no user, show sign in/up buttons
+        } else {
             navArea.innerHTML = `
                 <button id="signInBtn">Sign In</button>
                 <button id="signUpBtn">Sign Up</button>
             `;
-            // Re-attach event listeners as buttons are re-created
-            document.getElementById('signInBtn')?.addEventListener('click', () => {
-                authTitle.textContent = 'Sign In';
-                authSubmit.textContent = 'Sign In';
-                document.querySelector('.forgot-password')?.style.display = 'block';
-                authModal.style.display = 'block';
-            });
-            document.getElementById('signUpBtn')?.addEventListener('click', () => {
-                authTitle.textContent = 'Sign Up';
-                authSubmit.textContent = 'Sign Up';
-                document.querySelector('.forgot-password')?.style.display = 'none';
-                authModal.style.display = 'block';
-            });
+            // Crucially, re-attach event listeners after the buttons are rendered
+            attachAuthButtonListeners();
         }
     }
+}
+
+// Function to attach event listeners to auth buttons
+function attachAuthButtonListeners() {
+    const signInBtn = document.getElementById('signInBtn');
+    const signUpBtn = document.getElementById('signUpBtn');
+
+    signInBtn?.addEventListener('click', () => {
+        authTitle.textContent = 'Sign In';
+        authSubmit.textContent = 'Sign In';
+        document.querySelector('.forgot-password')?.style.display = 'block';
+        authModal.style.display = 'block';
+    });
+
+    signUpBtn?.addEventListener('click', () => {
+        authTitle.textContent = 'Sign Up';
+        authSubmit.textContent = 'Sign Up';
+        document.querySelector('.forgot-password')?.style.display = 'none';
+        authModal.style.display = 'block';
+    });
 }
 
 // Logout function
@@ -121,10 +130,13 @@ function logoutUser() {
     updateNavUI(); // Update UI after logout
 }
 
-// Auto-update nav on load
+// Auto-update nav on load and attach initial listeners
 window.onload = () => {
     updateNavUI();
+    // Also attach listeners on initial load if buttons are present in HTML
+    attachAuthButtonListeners();
 };
+
 
 // Forgot Password Logic
 document.querySelector('.forgot-password')?.addEventListener('click', (event) => {
