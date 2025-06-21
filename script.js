@@ -1,10 +1,3 @@
-// Ensure Firebase modules are globally available from the DNDcharacter.html script
-// This script will only run after Firebase is initialized in the HTML.
-const db = window.firestoreDb;
-const auth = window.firebaseAuth;
-const appId = window.appId; // Get the appId from the global scope
-let currentUserId = window.currentUserId; // Initial user ID from window global
-
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Element References
     const openModalBtn = document.getElementById('open-character-modal-btn');
@@ -23,18 +16,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmNoBtn = document.getElementById('confirm-no-btn');
     let confirmAction = null; // Stores the function to execute on 'Yes'
 
+    // Key for localStorage
+    const STORAGE_KEY = 'dndCharacters'; // Changed to store multiple characters
+
     // --- Utility Functions ---
 
     /**
      * Shows the custom confirmation modal.
      * @param {string} message - The message to display in the modal.
      * @param {Function} onConfirm - The callback function to execute if 'Yes' is clicked.
+     * @param {boolean} isError - If true, style the modal for an error message.
      */
-    const showConfirmationModal = (message, onConfirm) => {
+    const showConfirmationModal = (message, onConfirm, isError = false) => {
         confirmationMessage.textContent = message;
         confirmAction = onConfirm; // Store the action to be performed
         confirmationModal.classList.remove('hidden');
+
+        // Adjust modal buttons for error messages (only 'OK' button)
+        if (isError) {
+            confirmYesBtn.textContent = 'OK';
+            confirmNoBtn.classList.add('hidden'); // Hide 'No' button
+            confirmYesBtn.removeEventListener('click', confirmAction); // Remove previous listener
+            confirmYesBtn.addEventListener('click', hideConfirmationModal); // Make 'OK' close it
+        } else {
+            confirmYesBtn.textContent = 'Yes';
+            confirmNoBtn.classList.remove('hidden'); // Show 'No' button
+            // Re-attach original listeners, ensuring no duplicates if already there
+            confirmYesBtn.removeEventListener('click', hideConfirmationModal); // Remove 'OK' behavior if it was there
+            confirmYesBtn.addEventListener('click', () => { // Re-add 'Yes' behavior
+                if (confirmAction) {
+                    confirmAction();
+                }
+            }, { once: true }); // Use { once: true } to prevent multiple attachments
+        }
     };
+
 
     /**
      * Hides the custom confirmation modal.
@@ -77,64 +93,66 @@ document.addEventListener('DOMContentLoaded', () => {
         characterModal.classList.add('hidden');
     };
 
-    // --- Firestore Operations ---
+    // --- localStorage Operations ---
 
     /**
-     * Gets the Firestore collection reference for characters for the current user.
-     * @returns {import('firebase/firestore').CollectionReference} - The collection reference.
+     * Retrieves all characters from localStorage.
+     * @returns {Array<Object>} - An array of character objects.
      */
-    const getCharactersCollection = () => {
-        // Use the currentUserId obtained from Firebase auth.
-        // If currentUserId is still null (e.g., auth not ready), use a fallback or handle error.
-        // For this app, we ensure script.js only loads after auth is ready, so currentUserId should be set.
-        if (!currentUserId) {
-            console.error("User ID is not available. Cannot get Firestore collection.");
-            // Generate a random ID if auth somehow fails, but ideally, this shouldn't happen.
-            currentUserId = auth.currentUser?.uid || crypto.randomUUID();
-            console.warn("Using a fallback user ID:", currentUserId);
+    const getCharactersFromLocalStorage = () => {
+        try {
+            const charactersJSON = localStorage.getItem(STORAGE_KEY);
+            return charactersJSON ? JSON.parse(charactersJSON) : [];
+        } catch (e) {
+            console.error("Error retrieving characters from localStorage:", e);
+            showConfirmationModal("Error loading characters. Your browser's storage might be full or blocked.", () => {}, true);
+            return [];
         }
-        // Public data: /artifacts/{appId}/public/data/characters
-        return collection(db, `artifacts/${appId}/public/data/characters`);
     };
 
     /**
-     * Saves a character to Firestore (adds new or updates existing).
+     * Saves a character to localStorage (adds new or updates existing).
      * @param {Object} characterData - The character data to save.
      * @param {string|null} characterId - The ID of the character if updating, null if new.
      */
-    const saveCharacter = async (characterData, characterId = null) => {
+    const saveCharacter = (characterData, characterId = null) => {
         try {
-            const charactersCollection = getCharactersCollection();
+            let characters = getCharactersFromLocalStorage();
+
             if (characterId) {
                 // Update existing character
-                const charDocRef = doc(charactersCollection, characterId);
-                await updateDoc(charDocRef, characterData);
-                console.log("Character updated with ID:", characterId);
+                const index = characters.findIndex(char => char.id === characterId);
+                if (index !== -1) {
+                    characters[index] = { ...characterData, id: characterId }; // Preserve existing ID
+                }
             } else {
-                // Add new character
-                const docRef = await addDoc(charactersCollection, characterData);
-                console.log("New character added with ID:", docRef.id);
+                // Add new character with a unique ID
+                characterData.id = Date.now().toString(); // Simple unique ID
+                characters.push(characterData);
             }
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
             closeCharacterModal(); // Close modal after successful save
+            loadCharacters(); // Reload characters to update the display
         } catch (e) {
-            console.error("Error saving character: ", e);
-            // In a real app, you might show a user-friendly error message here
-            alert("Failed to save character. Please try again."); // Using alert for simplicity, but a custom modal is better.
+            console.error("Error saving character to localStorage:", e);
+            showConfirmationModal("Failed to save character. Your browser's storage might be full or blocked.", () => {}, true);
         }
     };
 
     /**
-     * Deletes a character from Firestore.
+     * Deletes a character from localStorage.
      * @param {string} characterId - The ID of the character to delete.
      */
-    const deleteCharacter = async (characterId) => {
+    const deleteCharacter = (characterId) => {
         try {
-            const charactersCollection = getCharactersCollection();
-            await deleteDoc(doc(charactersCollection, characterId));
-            console.log("Character deleted with ID:", characterId);
+            let characters = getCharactersFromLocalStorage();
+            characters = characters.filter(char => char.id !== characterId);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
+            loadCharacters(); // Reload characters to update the display
         } catch (e) {
-            console.error("Error deleting character: ", e);
-            alert("Failed to delete character. Please try again."); // Using alert for simplicity, but a custom modal is better.
+            console.error("Error deleting character from localStorage:", e);
+            showConfirmationModal("Failed to delete character.", () => {}, true);
         }
     };
 
@@ -175,36 +193,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     /**
-     * Fetches and displays all characters from Firestore in real-time.
+     * Loads and displays all characters from localStorage.
      */
     const loadCharacters = () => {
-        if (!db || !currentUserId) {
-            console.warn("Firestore or User ID not available yet. Skipping character load.");
-            noCharactersMessage.classList.remove('hidden'); // Show message if characters can't load
-            return;
+        const characters = getCharactersFromLocalStorage();
+        characterListDiv.innerHTML = ''; // Clear current list
+
+        if (characters.length === 0) {
+            noCharactersMessage.classList.remove('hidden');
+        } else {
+            noCharactersMessage.classList.add('hidden');
+            // Sort characters by timestamp if you added one, or just display as is
+            // characters.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Uncomment if using timestamp for sorting
+            characters.forEach((character) => {
+                const card = renderCharacterCard(character);
+                characterListDiv.appendChild(card);
+            });
         }
-
-        const charactersCollection = getCharactersCollection();
-
-        // Use onSnapshot for real-time updates
-        onSnapshot(charactersCollection, (snapshot) => {
-            characterListDiv.innerHTML = ''; // Clear current list
-
-            if (snapshot.empty) {
-                noCharactersMessage.classList.remove('hidden');
-            } else {
-                noCharactersMessage.classList.add('hidden');
-                snapshot.forEach((doc) => {
-                    const character = { id: doc.id, ...doc.data() };
-                    const card = renderCharacterCard(character);
-                    characterListDiv.appendChild(card);
-                });
-            }
-        }, (error) => {
-            console.error("Error fetching characters:", error);
-            characterListDiv.innerHTML = '<p style="color: red;">Error loading characters. Please refresh the page.</p>';
-            noCharactersMessage.classList.add('hidden'); // Hide empty message if there was an error
-        });
     };
 
     // --- Event Listeners ---
@@ -232,31 +237,26 @@ document.addEventListener('DOMContentLoaded', () => {
             class: document.getElementById('character-class').value,
             race: document.getElementById('character-race').value,
             background: document.getElementById('character-background').value,
-            // Add a timestamp for ordering, useful for "last modified" or creation order
-            timestamp: new Date().toISOString()
+            // You can add a timestamp here if you want to store creation/last modified time
+            // timestamp: new Date().toISOString()
         };
 
         saveCharacter(characterData, characterId);
     });
 
     // Confirmation modal button listeners
+    // These listeners are now dynamically managed within showConfirmationModal
+    // but we keep the initial setup for clarity and default behavior.
     confirmYesBtn.addEventListener('click', () => {
-        if (confirmAction) {
-            confirmAction(); // Execute the stored action
+        // This listener will be overridden or triggered based on showConfirmationModal's state
+        if (confirmAction && !confirmNoBtn.classList.contains('hidden')) { // Only act if it's a 'Yes/No' context
+             confirmAction();
         }
     });
 
     confirmNoBtn.addEventListener('click', hideConfirmationModal);
 
-    // Initial load: Ensure characters are loaded once Firebase is ready
-    // The `onAuthStateChanged` listener in DNDcharacter.html ensures this script loads
-    // only when Firebase is initialized and authenticated, so we can directly call loadCharacters here.
-    if (db && currentUserId) {
-        loadCharacters();
-    } else {
-        // Fallback for development if loaded directly without the main HTML's Firebase setup
-        console.warn("script.js loaded before Firebase was fully ready. Will attempt to load characters once Firebase globals are available.");
-        // You might set up a polling or a custom event listener here in a more complex setup
-        // For this example, the DNDcharacter.html ensures the proper loading order.
-    }
+
+    // Initial load of characters when the page loads
+    loadCharacters();
 });
