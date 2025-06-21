@@ -36,348 +36,160 @@ h1, h2 {
 
 label {
     display: block;
-    font-weight: bold;
     margin-bottom: 8px;
     color: #a0a0c0;
+    font-weight: bold;
 }
 
-input, select, textarea {
-    width: 100%;
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    width: calc(100% - 20px);
     padding: 12px;
-    margin-top: 5px;
-    background-color: #1e1e2f;
-    color: #fff;
     border: 1px solid #4f4f7a;
     border-radius: 8px;
-    box-sizing: border-box;
+    background-color: #3a3a5a;
+    color: #e0e0e0;
     font-size: 1em;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input:focus, select:focus, textarea:focus {
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.3);
     outline: none;
-    border-color: #7a7acc;
-    box-shadow: 0 0 0 3px rgba(122, 122, 204, 0.3);
 }
 
 textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 80px;
 }
 
 button {
-    width: 100%;
-    padding: 12px;
     background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
     color: white;
+    padding: 12px 25px;
     border: none;
     border-radius: 8px;
-    font-size: 1.1em;
-    font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    display: block; /* Make button a block element */
+    width: 100%; /* Full width */
+    margin-top: 25px; /* Add margin to separate from form elements */
 }
 
 button:hover {
+    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(65, 123, 237, 0.4);
-}
-
-/* Specific style for the "Create New Character" button */
-.create-character-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 30px auto; /* Center button and add margin */
-    max-width: 300px; /* Limit button width */
-}
-
-.create-character-btn i {
-    font-size: 1.2em;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
 .back-button {
     position: absolute;
     top: 20px;
     left: 20px;
-    background-color: #444;
+    background-color: #4a4a6a;
     color: white;
-    padding: 8px 16px;
-    text-decoration: none;
+    padding: 8px 15px;
     border-radius: 8px;
-    font-size: 14px;
-    transition: background-color 0.3s, transform 0.2s;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+    z-index: 10; /* Ensure it's above other content */
 }
 
 .back-button:hover {
-    background-color: #666;
-    transform: translateY(-1px);
+    background-color: #5a5a7a;
 }
 
-/* Utility class to hide elements */
-.hidden {
-    display: none !important; /* Use !important to ensure override */
-}
-
-/* === Modal Styles === */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Ensure modal is on top */
-}
-
-.modal-content {
-    background-color: #2a2a3e;
-    padding: 30px;
+/* Character Display Card */
+.character-display {
+    background-color: #3a3a5a;
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    width: 90%;
-    max-width: 550px; /* Slightly larger for forms */
-    position: relative;
-    box-sizing: border-box;
-    animation: fadeIn 0.3s ease-out;
-}
-
-.modal-content.small-modal {
-    max-width: 350px; /* For confirmation modal */
-    text-align: center;
-}
-
-.modal-content h2 {
-    margin-top: 0;
-    color: #fff;
-    font-size: 1.8em;
-    border-bottom: 2px solid #4f4f7a;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-}
-
-.close-button {
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: #fff;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Confirmation Modal Specific Styles */
-.modal-actions {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 25px;
-    gap: 15px;
-}
-
-.modal-actions button {
-    width: 48%; /* Adjust width for two buttons */
-    padding: 10px;
-    font-size: 1em;
-}
-
-.confirm-yes-btn {
-    background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
-}
-
-.confirm-yes-btn:hover {
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-}
-
-.confirm-no-btn {
-    background: linear-gradient(90deg, #c13535 0%, #d64a4a 100%);
-}
-
-.confirm-no-btn:hover {
-    box-shadow: 0 4px 15px rgba(193, 53, 53, 0.4);
-}
-
-
-/* === Character List Section === */
-.character-list-section {
-    margin-top: 40px;
-    background-color: #2a2a3e;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    margin-top: 30px;
     border: 1px solid #4f4f7a;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: left;
 }
 
-.character-list-section h2 {
-    margin-top: 0;
-    margin-bottom: 25px;
+.character-display h2 {
     color: #fff;
-    border-bottom: 2px solid #4f4f7a;
-    padding-bottom: 15px;
-}
-
-.character-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
-    gap: 25px;
-    padding: 10px;
-}
-
-.character-card {
-    background-color: #3a3a52;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border: 1px solid #5a5a7f;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.character-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.character-card h3 {
-    color: #fff;
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-    border-bottom: 1px solid #5a5a7f;
-    padding-bottom: 10px;
-}
-
-.character-card p {
-    font-size: 0.95em;
-    margin-bottom: 8px;
-    color: #e0e0e0;
-}
-
-.character-card strong {
-    color: #a0a0c0;
-    margin-right: 5px;
-}
-
-.character-card-actions {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-    gap: 10px;
-}
-
-.character-card-actions button {
-    flex: 1; /* Distribute space equally */
-    padding: 10px 15px;
-    font-size: 0.9em;
-    border-radius: 6px;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.character-card-actions button i {
-    margin-right: 5px;
-}
-
-.edit-btn {
-    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
-}
-
-.edit-btn:hover {
-    box-shadow: 0 4px 15px rgba(65, 123, 237, 0.4);
-}
-
-.delete-btn {
-    background: linear-gradient(90deg, #c13535 0%, #d64a4a 100%);
-}
-
-.delete-btn:hover {
-    box-shadow: 0 4px 15px rgba(193, 53, 53, 0.4);
-}
-
-/* Message for no characters */
-#no-characters-message {
+    margin-bottom: 20px;
+    font-size: 1.8em;
     text-align: center;
-    color: #a0a0c0;
-    font-style: italic;
-    padding: 20px;
-    border: 1px dashed #4f4f7a;
-    border-radius: 8px;
+}
+
+.character-info p {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    color: #c0c0d8;
+}
+
+.character-info strong {
+    color: #fff;
+}
+
+.reset-button {
+    background-color: #d32f2f;
     margin-top: 20px;
 }
 
+.reset-button:hover {
+    background-color: #c62828;
+}
 
-/* === Styles for Footer (Copied from info-page-style.css for consistency) === */
+.hidden {
+    display: none;
+}
+
+/* Footer Styles */
 .footer {
-    background-color: #1a1a2e;
-    padding: 40px 20px;
-    margin-top: auto; /* Push footer to the bottom */
-    border-top: 1px solid #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    color: #ccc;
     width: 100%;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: auto; /* Pushes footer to the bottom */
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+    border-top: 1px solid #4f4f7a;
     box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.footer p {
-    font-size: 0.9em;
-    color: #888;
-    margin-top: 20px;
 }
 
 .comments-section {
-    background-color: #2a2a3e;
-    padding: 30px;
-    border-radius: 15px;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    text-align: center;
-    box-sizing: border-box;
+    margin-bottom: 25px;
 }
 
 .comments-section h3 {
-    font-size: 1.8em;
-    color: #4CAF50;
-    margin-bottom: 20px;
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.5em;
 }
 
 .comments-section textarea {
-    width: calc(100% - 24px);
+    width: calc(100% - 40px);
+    max-width: 600px;
     min-height: 100px;
-    padding: 12px;
-    border: 1px solid #555;
+    padding: 15px;
     border-radius: 8px;
-    background-color: #1e1e2f;
-    color: #eee;
-    font-family: 'Segoe UI', sans-serif;
-    resize: vertical;
+    border: 1px solid #4f4f7a;
+    background-color: #3a3a5a;
+    color: #e0e0e0;
     margin-bottom: 15px;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1em;
+    resize: vertical;
 }
 
 .comments-section textarea:focus {
-    outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
 }
@@ -403,7 +215,7 @@ button:hover {
 
 .social-buttons {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Ensure buttons are centered within their container */
     gap: 25px;
     margin-top: 25px;
 }
@@ -464,42 +276,209 @@ button:hover {
         padding: 20px;
     }
 
-    .social-buttons {
-        gap: 15px;
-    }
-
-    .icon-button {
-        width: 45px;
-        height: 45px;
-        font-size: 1.5em;
+    .comments-section textarea {
+        width: calc(100% - 20px);
     }
 }
 
-@media (max-width: 480px) {
-    body {
-        padding: 20px 10px;
-    }
+/* Styles for Character Management */
+.character-list-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #4f4f7a;
+}
 
-    h1, h2 {
-        font-size: 1.8em;
-        margin-bottom: 20px;
-    }
+.create-character-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: auto; /* Allow button to size based on content */
+    margin: 20px auto; /* Center the button */
+    padding: 12px 30px; /* More padding for a bigger button */
+    font-size: 1.1em;
+}
 
-    .create-character-btn {
-        font-size: 1em;
-        padding: 10px;
-    }
+.create-character-btn i {
+    font-size: 1.3em;
+}
 
-    .character-list-section {
-        padding: 20px;
-    }
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+    padding-top: 10px;
+}
 
-    .character-card h3 {
-        font-size: 1.3em;
-    }
+.character-card {
+    background-color: #3a3a5a;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #4f4f7a;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes buttons to bottom */
+}
 
-    .character-card-actions button {
-        font-size: 0.8em;
-        padding: 8px 10px;
-    }
+.character-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.character-card h3 {
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+    text-align: center;
+}
+
+.character-card p {
+    margin-bottom: 8px;
+    color: #c0c0d8;
+    font-size: 1em;
+}
+
+.character-card .card-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.character-card .card-buttons button {
+    flex-grow: 1; /* Allow buttons to expand */
+    width: auto; /* Override default button width */
+    padding: 10px 15px;
+    font-size: 0.95em;
+    margin-top: 0; /* Remove top margin from general button style */
+}
+
+.edit-character-btn {
+    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%); /* Use a gradient for edit */
+}
+
+.edit-character-btn:hover {
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+}
+
+.delete-character-btn {
+    background-color: #d32f2f; /* Red for delete */
+}
+
+.delete-character-btn:hover {
+    background-color: #c62828;
+}
+
+#no-characters-message {
+    text-align: center;
+    color: #a0a0c0;
+    font-style: italic;
+    font-size: 1.1em;
+    padding: 30px;
+    border: 1px dashed #4f4f7a;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    display: flex; /* Use flexbox for centering */
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #2a2a3e;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    border: 1px solid #4f4f7a;
+    color: #e0e0e0;
+    max-height: 90vh; /* Limit height for scrollability */
+    overflow-y: auto; /* Enable scrolling for long forms */
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #fff;
+    font-size: 2em;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #fff;
+}
+
+/* Styles for confirmation modal */
+.small-modal {
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.modal-actions button {
+    width: auto; /* Allow buttons to size to content */
+    flex-grow: 0; /* Prevent them from stretching */
+    padding: 10px 20px;
+    font-size: 1em;
+}
+
+.confirm-yes-btn {
+    background-color: #4CAF50;
+}
+
+.confirm-yes-btn:hover {
+    background-color: #45a049;
+}
+
+.confirm-no-btn {
+    background-color: #f44336;
+}
+
+.confirm-no-btn:hover {
+    background-color: #da190b;
+}
+
+.error-modal {
+    border-color: #f44336; /* Red border for errors */
+}
+
+.error-modal #confirmation-message {
+    color: #f44336; /* Red text for error messages */
+    font-weight: bold;
 }

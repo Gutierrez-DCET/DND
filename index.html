@@ -5,49 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tabletop Nexus - Home</title>
   <link rel="stylesheet" href="DNDHPsty.css" />
-  <!-- Font Awesome for social media icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <!-- Ribbon Navigation -->
   <div class="ribbon">
     <nav class="nav-tabs">
-      <!-- UPDATED LINKS -->
-      <a href="info_campaigns.html">Campaigns</a>
-      <a href="info_characters.html">Characters</a>
+      <a href="DNDcampaign.html">Campaigns</a>
+      <a href="DNDcharacter.html">Characters</a>
       <a href="info_articles.html">Articles</a>
       <a href="info_tutorials.html">Tutorials</a>
     </nav>
     <div id="user-status" class="auth-buttons">
-      <!-- Content here will be managed by dndscript.js based on auth state -->
       <button id="signInBtn">Sign In</button>
       <button id="signUpBtn">Sign Up</button>
     </div>
   </div>
 
-  <!-- Main Content -->
   <div class="homepage-container">
     <h1>Welcome to Tabletop Nexus</h1>
     <p>Select a tool to begin:</p>
     <div class="button-container">
       <a href="DNDcampaign.html" class="image-button">
-        <img src="https://images.squarespace-cdn.com/content/v1/5dadaf88e03a4e6bb69307dd/1579654815734-57U4NPCXYU6L20J9CESE/UA-Feature.jpg?format=1000w" alt="Create a Campaign" />
-        <span>Campaign Creator</span>
+        <img src="https://i.imgur.com/g0PqT7B.jpeg" alt="Campaigns" class="button-image">
+        <span class="button-text">Campaign Creator</span>
       </a>
       <a href="DNDcharacter.html" class="image-button">
-        <img src="https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/223772591/original/8fb16427f8b0e01ebcdd6f8d5f46086acff3c702/create-your-dnd-character.png" alt="Create a Character" />
-        <span>Character Creator</span>
+        <img src="https://i.imgur.com/X4y1M7d.jpeg" alt="Characters" class="button-image">
+        <span class="button-text">Character Creator</span>
       </a>
     </div>
 
-    <!-- New About Tabletop Nexus Section -->
-    <div class="about-section">
+    <div class="about-us">
       <h2>About Tabletop Nexus</h2>
-      <p>Tabletop Nexus is your ultimate hub for all things tabletop role-playing games. Whether you're a seasoned Dungeon Master, a budding character artist, or a curious newcomer, our platform provides intuitive tools to enhance your gaming experience. Create epic campaigns, design unique characters, and discover resources to inspire your next adventure. Join our community and let your imagination run wild!</p>
+      <p>Tabletop Nexus is your ultimate companion for Dungeons & Dragons, whether you're a seasoned Dungeon Master or a new adventurer. Our platform provides intuitive tools to enhance your gaming experience. Create epic campaigns, design unique characters, and discover resources to inspire your next adventure. Join our community and let your imagination run wild!</p>
     </div>
   </div>
 
-  <!-- Auth Modal -->
   <div id="authModal" class="modal">
     <div class="modal-content">
       <span class="close">×</span>
@@ -56,11 +49,11 @@
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit" id="authSubmit">Sign In</button>
+        <p class="forgot-password">Forgot Password?</p>
       </form>
     </div>
   </div>
 
-  <!-- Footer Section -->
   <footer class="footer">
     <div class="comments-section">
       <h3>Leave a Comment</h3>
@@ -74,7 +67,7 @@
     </div>
     <p>&copy; 2024 Tabletop Nexus. All rights reserved.</p>
   </footer>
-  
-  <script type="module" src="dndscript.js"></script>
+
+  <script src="dndscript.js"></script>
 </body>
 </html>

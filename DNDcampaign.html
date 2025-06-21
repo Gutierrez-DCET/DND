@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>D&D Campaign Creator</title>
   <link rel="stylesheet" href="Campaignstyles.css" />
-  <!-- Font Awesome for social media icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -15,59 +14,46 @@
     <h1>Your Campaigns</h1>
     <button id="openModalBtn" class="add-campaign-btn">+ Add New Campaign</button>
 
-    <!-- Campaign Cards Container -->
     <div id="campaign-list" class="campaign-list">
-      <!-- Campaign cards will be inserted here by JavaScript -->
-    </div>
+      </div>
   </div>
 
-  <!-- Create/Edit Campaign Modal -->
   <div id="campaignModal" class="modal">
     <div class="modal-content">
       <span class="close" id="createModalClose">×</span>
       <h2 id="modal-title">New Campaign</h2>
       <form id="campaign-form">
-        <!-- Hidden input for editing -->
         <input type="hidden" id="campaign-id" name="campaign-id">
 
         <label for="campaign-name">Campaign Name:</label>
         <input type="text" id="campaign-name" name="campaign-name" required />
 
         <label for="campaign-description">Description:</label>
-        <textarea id="campaign-description" name="campaign-description" rows="4" required></textarea>
+        <textarea id="campaign-description" name="campaign-description" rows="5" placeholder="A brief overview of your campaign..." required></textarea>
 
-        <fieldset>
-          <legend>Enemy Types</legend>
-          <div class="checkbox-grid">
-            <label><input type="checkbox" name="enemy-types" value="Undead" /> Undead</label>
-            <label><input type="checkbox" name="enemy-types" value="Monsters" /> Monsters</label>
-            <label><input type="checkbox" name="enemy-types" value="Beasts" /> Beasts</label>
-            <label><input type="checkbox" name="enemy-types" value="Celestial" /> Celestial</label>
-            <label><input type="checkbox" name="enemy-types" value="Dragon" /> Dragon</label>
-            <label><input type="checkbox" name="enemy-types" value="Mystics" /> Mystics</label>
-            <label class="others-label">
-              <input type="checkbox" id="enemy-others-checkbox" name="enemy-types" value="Others" /> Others:
-              <input type="text" id="enemy-others-text" name="enemy-others-text" placeholder="Specify..." disabled />
-            </label>
-          </div>
-        </fieldset>
+        <label>Enemy Types:</label>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="enemy-type" value="Goblins"> Goblins</label>
+          <label><input type="checkbox" name="enemy-type" value="Orcs"> Orcs</label>
+          <label><input type="checkbox" name="enemy-type" value="Dragons"> Dragons</label>
+          <label>
+            <input type="checkbox" id="enemy-others-checkbox" name="enemy-type" value="Others"> Others:
+            <input type="text" id="enemy-others-text" placeholder="Specify other types" class="hidden">
+          </label>
+        </div>
 
-        <fieldset>
-          <legend>Secrets</legend>
-          <div class="checkbox-grid">
-            <label><input type="checkbox" name="secrets" value="Room" /> Secret Rooms</label>
-            <label><input type="checkbox" name="secrets" value="Traps" /> Hidden Traps</label>
-            <label><input type="checkbox" name="secrets" value="Chests" /> Locked Chests</label>
-          </div>
-        </fieldset>
+        <label>Secrets/Plot Hooks:</label>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="secrets" value="Hidden Lore"> Hidden Lore</label>
+          <label><input type="checkbox" name="secrets" value="Betrayal"> Betrayal</label>
+          <label><input type="checkbox" name="secrets" value="Ancient Artifact"> Ancient Artifact</label>
+        </div>
 
         <label for="difficulty">Difficulty:</label>
         <select id="difficulty" name="difficulty" required>
-          <option value="" disabled selected>Select difficulty</option>
           <option value="Easy">Easy</option>
           <option value="Medium">Medium</option>
           <option value="Hard">Hard</option>
-          <option value="Nightmare">Nightmare</option>
         </select>
 
         <button type="submit" id="save-campaign-btn">Save Campaign</button>
@@ -75,7 +61,6 @@
     </div>
   </div>
 
-  <!-- Display Campaign Details Modal -->
   <div id="detailModal" class="modal">
     <div class="modal-content detail-modal-content">
       <span class="close" id="detailModalClose">×</span>
@@ -88,7 +73,6 @@
     </div>
   </div>
   
-  <!-- Footer Section -->
   <footer class="footer">
       <div class="comments-section">
           <h3>Leave a Comment</h3>
@@ -103,7 +87,6 @@
       <p>&copy; 2024 Tabletop Nexus. All rights reserved.</p>
   </footer>
 
-  <!-- Link to the combined JavaScript file -->
   <script src="dndscript.js"></script>
 </body>
 </html>

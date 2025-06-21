@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Your D&D Characters</title>
     <link rel="stylesheet" href="dndstyles.css">
-    <!-- Font Awesome for social media icons and other UI icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -13,28 +12,24 @@
     <div class="container">
         <h1>Manage Your Characters</h1>
 
-        <!-- Button to open the character creation modal -->
         <button id="open-character-modal-btn" class="create-character-btn">
             <i class="fas fa-plus-circle"></i> Create New Character
         </button>
 
-        <!-- Area to display all created characters -->
         <div class="character-list-section">
             <h2>Your Current Characters</h2>
             <div id="character-list" class="character-grid">
-                <!-- Character cards will be dynamically inserted here by JavaScript -->
                 <p id="no-characters-message" class="hidden">No characters created yet. Click "Create New Character" to begin!</p>
             </div>
         </div>
     </div>
 
-    <!-- Character Creation/Edit Modal -->
     <div id="character-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <span class="close-button" id="close-character-modal-btn">&times;</span>
+            <button class="close-button" id="character-modal-close">&times;</button>
             <h2 id="modal-title">Create New Character</h2>
             <form id="character-form">
-                <input type="hidden" id="character-id"> <!-- Hidden field for character ID when editing -->
+                <input type="hidden" id="character-id" name="character-id">
 
                 <div class="form-group">
                     <label for="character-name">Character Name:</label>
@@ -51,7 +46,11 @@
                         <option value="Bard">Bard</option>
                         <option value="Paladin">Paladin</option>
                         <option value="Ranger">Ranger</option>
-                        <option value="Monk">Monk</option> <!-- Added Monk class -->
+                        <option value="Sorcerer">Sorcerer</option>
+                        <option value="Warlock">Warlock</option>
+                        <option value="Monk">Monk</option>
+                        <option value="Druid">Druid</option>
+                        <option value="Barbarian">Barbarian</option>
                     </select>
                 </div>
 
@@ -61,10 +60,12 @@
                         <option value="Human">Human</option>
                         <option value="Elf">Elf</option>
                         <option value="Dwarf">Dwarf</option>
-                        <option value="Orc">Orc</option>
                         <option value="Halfling">Halfling</option>
                         <option value="Dragonborn">Dragonborn</option>
                         <option value="Tiefling">Tiefling</option>
+                        <option value="Gnome">Gnome</option>
+                        <option value="Half-Orc">Half-Orc</option>
+                        <option value="Half-Elf">Half-Elf</option>
                     </select>
                 </div>
 
@@ -78,7 +79,6 @@
         </div>
     </div>
 
-    <!-- Footer Section -->
     <footer class="footer">
         <div class="comments-section">
             <h3>Leave a Comment</h3>
@@ -93,7 +93,6 @@
         <p>&copy; 2024 Tabletop Nexus. All rights reserved.</p>
     </footer>
 
-    <!-- Link to the combined JavaScript file -->
     <script src="dndscript.js"></script>
 </body>
 </html>

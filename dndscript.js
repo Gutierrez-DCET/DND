@@ -26,55 +26,46 @@ let confirmAction = null; // Stores the function to execute on 'Yes'
  * Shows the custom confirmation modal.
  * @param {string} message - The message to display in the modal.
  * @param {Function} onConfirm - The callback function to execute if 'Yes' is clicked.
- * @param {boolean} isError - If true, style the modal for an error message (shows 'OK' button only).
+ * @param {boolean} isError - If true, style the modal for an error message.
  */
-const showConfirmationModal = (message, onConfirm, isError = false) => {
+function showConfirmationModal(message, onConfirm, isError = false) {
     confirmationMessage.textContent = message;
-    confirmAction = onConfirm; // Store the action to be performed
-    confirmationModal.classList.remove('hidden');
-
-    // Remove previous listeners to prevent duplicates
-    confirmYesBtn.removeEventListener('click', confirmActionWrapper);
-    confirmNoBtn.removeEventListener('click', hideConfirmationModal);
+    confirmAction = onConfirm; // Store the callback
 
     if (isError) {
-        confirmYesBtn.textContent = 'OK';
-        confirmNoBtn.classList.add('hidden'); // Hide 'No' button
-        confirmYesBtn.addEventListener('click', hideConfirmationModal, { once: true });
+        confirmationModal.querySelector('.modal-content').classList.add('error-modal');
+        confirmYesBtn.style.display = 'none'; // Hide Yes button for error
+        confirmNoBtn.textContent = 'OK'; // Change No button to OK
     } else {
-        confirmYesBtn.textContent = 'Yes';
-        confirmNoBtn.classList.remove('hidden'); // Show 'No' button
-        confirmYesBtn.addEventListener('click', confirmActionWrapper, { once: true });
-        confirmNoBtn.addEventListener('click', hideConfirmationModal, { once: true });
+        confirmationModal.querySelector('.modal-content').classList.remove('error-modal');
+        confirmYesBtn.style.display = ''; // Show Yes button
+        confirmNoBtn.textContent = 'No'; // Restore No button text
     }
-};
 
-/**
- * Wrapper for confirmAction to ensure hideConfirmationModal is called.
- */
-const confirmActionWrapper = () => {
-    if (confirmAction) {
-        confirmAction();
-    }
-    hideConfirmationModal();
-};
+    confirmationModal.classList.remove('hidden');
 
-/**
- * Hides the custom confirmation modal.
- */
-const hideConfirmationModal = () => {
-    confirmationModal.classList.add('hidden');
-    confirmAction = null; // Clear the action
-};
+    // Remove previous listeners to prevent multiple executions
+    confirmYesBtn.removeEventListener('click', handleConfirmYes);
+    confirmNoBtn.removeEventListener('click', handleConfirmNo);
 
-
-// Global function for logout (accessible from any page)
-function logoutUser() {
-    localStorage.removeItem('currentUser');
-    // Using default alert for logout as it's a simple, non-critical action
-    alert('Logged out!');
-    location.reload(); // Reload the page to reflect logout status
+    // Add new listeners
+    confirmYesBtn.addEventListener('click', handleConfirmYes);
+    confirmNoBtn.addEventListener('click', handleConfirmNo);
 }
+
+function handleConfirmYes() {
+    confirmationModal.classList.add('hidden');
+    if (confirmAction) {
+        confirmAction(); // Execute the stored callback
+    }
+}
+
+function handleConfirmNo() {
+    confirmationModal.classList.add('hidden');
+    // If it was an error modal, just close on OK.
+    // If it was a confirmation, 'No' means do nothing further.
+}
+
 
 // =================================================================
 //                      PAGE INITIALIZATION LOGIC
@@ -91,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('campaign-list')) {
         initCampaignPage();
     }
+    // Call updateNavUI on every page load to ensure user status is correct
+    updateNavUI();
 });
 
 
@@ -112,93 +105,131 @@ function initHomepage() {
         { email: 'admin@example.com', password: 'admin123', isAdmin: true },
         { email: 'user@example.com', password: 'user123', isAdmin: false }
     ];
+
     // Initialize users in localStorage if not already present
     if (!localStorage.getItem('registeredUsers')) {
         localStorage.setItem('registeredUsers', JSON.stringify(defaultUsers));
     }
 
-    // --- Modal Events ---
-    if (signInBtn) signInBtn.addEventListener('click', () => {
+    // --- Event Listeners ---
+    signInBtn?.addEventListener('click', () => {
         authTitle.textContent = 'Sign In';
         authSubmit.textContent = 'Sign In';
+        authForm.dataset.mode = 'signIn';
         authModal.style.display = 'block';
     });
-    if (signUpBtn) signUpBtn.addEventListener('click', () => {
+
+    signUpBtn?.addEventListener('click', () => {
         authTitle.textContent = 'Sign Up';
         authSubmit.textContent = 'Sign Up';
+        authForm.dataset.mode = 'signUp';
         authModal.style.display = 'block';
     });
-    if (closeBtn) closeBtn.addEventListener('click', () => authModal.style.display = 'none');
-    window.addEventListener('click', e => {
-        if (e.target === authModal) authModal.style.display = 'none';
-    });
 
-    // --- Form Submission ---
-    if (authForm) authForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const email = authForm.email.value;
-        const password = authForm.password.value;
-        const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-
-        if (authSubmit.textContent === 'Sign In') {
-            const user = users.find(u => u.email === email && u.password === password);
-            if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                alert(`Welcome back, ${user.isAdmin ? 'Admin' : 'User'}: ${user.email}`); // Using alert as per original
-                authModal.style.display = 'none';
-                updateNavUI();
-            } else {
-                alert('Invalid email or password.'); // Using alert as per original
-            }
-        } else { // Sign Up
-            if (users.some(u => u.email === email)) {
-                alert('Email already exists!'); // Using alert as per original
-            } else {
-                const newUser = { email, password, isAdmin: false };
-                users.push(newUser);
-                localStorage.setItem('registeredUsers', JSON.stringify(users));
-                localStorage.setItem('currentUser', JSON.stringify(newUser));
-                alert('Sign up successful!'); // Using alert as per original
-                authModal.style.display = 'none';
-                updateNavUI();
-            }
-        }
+    closeBtn?.addEventListener('click', () => {
+        authModal.style.display = 'none';
         authForm.reset();
     });
 
-    // --- UI Update Functions ---
-    function updateNavUI() {
-        const user = JSON.parse(localStorage.getItem('currentUser'));
-        const navArea = document.getElementById('user-status');
-        if (user && navArea) {
+    window.addEventListener('click', (event) => {
+        if (event.target == authModal) {
+            authModal.style.display = 'none';
+            authForm.reset();
+        }
+    });
+
+    authForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const email = authForm.elements.email.value;
+        const password = authForm.elements.password.value;
+        const mode = authForm.dataset.mode;
+
+        let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+
+        if (mode === 'signUp') {
+            if (users.some(user => user.email === email)) {
+                showConfirmationModal('Account with this email already exists!', () => {}, true);
+            } else {
+                users.push({ email, password, isAdmin: false });
+                localStorage.setItem('registeredUsers', JSON.stringify(users));
+                showConfirmationModal('Registration successful! You can now sign in.', () => {}, false);
+                authModal.style.display = 'none';
+                authForm.reset();
+            }
+        } else if (mode === 'signIn') {
+            const user = users.find(user => user.email === email && user.password === password);
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showConfirmationModal(`Welcome, ${user.email}!`, () => {
+                    authModal.style.display = 'none';
+                    authForm.reset();
+                    updateNavUI(); // Update UI after successful login
+                    location.reload(); // Reload the page to reflect login status
+                });
+
+            } else {
+                showConfirmationModal('Invalid email or password.', () => {}, true);
+            }
+        }
+    });
+
+    // Forgot Password Logic
+    document.querySelector('.forgot-password')?.addEventListener('click', () => {
+        const email = prompt("Enter your registered email:");
+
+        if (!email) return; // User cancelled
+
+        const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+        const user = users.find(u => u.email === email);
+
+        if (user) {
+            showConfirmationModal(`Your password is: ${user.password}`, () => {});
+        } else {
+            showConfirmationModal('No account found with that email.', () => {}, true);
+        }
+    });
+}
+
+// Update UI on login/logout
+function updateNavUI() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const navArea = document.getElementById('user-status');
+
+    if (navArea) { // Ensure navArea exists
+        if (user) {
             navArea.innerHTML = `
                 Logged in as ${user.email} (${user.isAdmin ? 'Admin' : 'User'})
                 <button onclick="logoutUser()">Logout</button>
             `;
-        } else if (navArea) {
-            // Re-create sign-in/sign-up buttons and re-attach listeners if logged out
+        } else {
             navArea.innerHTML = `
                 <button id="signInBtn">Sign In</button>
                 <button id="signUpBtn">Sign Up</button>
             `;
-            // Re-add event listeners since we replaced the HTML
-            const newSignInBtn = document.getElementById('signInBtn');
-            const newSignUpBtn = document.getElementById('signUpBtn');
-            if (newSignInBtn) newSignInBtn.addEventListener('click', () => {
-                authTitle.textContent = 'Sign In';
-                authSubmit.textContent = 'Sign In';
-                authModal.style.display = 'block';
+            // Re-attach listeners for sign in/up buttons if they were just added
+            document.getElementById('signInBtn')?.addEventListener('click', () => {
+                document.getElementById('authTitle').textContent = 'Sign In';
+                document.getElementById('authSubmit').textContent = 'Sign In';
+                document.getElementById('authForm').dataset.mode = 'signIn';
+                document.getElementById('authModal').style.display = 'block';
             });
-            if (newSignUpBtn) newSignUpBtn.addEventListener('click', () => {
-                authTitle.textContent = 'Sign Up';
-                authSubmit.textContent = 'Sign Up';
-                authModal.style.display = 'block';
+            document.getElementById('signUpBtn')?.addEventListener('click', () => {
+                document.getElementById('authTitle').textContent = 'Sign Up';
+                document.getElementById('authSubmit').textContent = 'Sign Up';
+                document.getElementById('authForm').dataset.mode = 'signUp';
+                document.getElementById('authModal').style.display = 'block';
             });
         }
     }
+}
 
-    // --- Initial Load ---
-    updateNavUI();
+// Logout
+function logoutUser() {
+    showConfirmationModal('Are you sure you want to log out?', () => {
+        localStorage.removeItem('currentUser');
+        // alert('Logged out!'); // Replaced by confirmation modal
+        location.reload(); // Reload the page to reflect logged out status
+    });
 }
 
 
@@ -206,231 +237,138 @@ function initHomepage() {
 //                      CHARACTER PAGE LOGIC
 // =================================================================
 function initCharacterPage() {
-    // DOM Element References (local to this function)
-    const openModalBtn = document.getElementById('open-character-modal-btn');
-    const closeModalBtn = document.getElementById('close-character-modal-btn');
-    const characterModal = document.getElementById('character-modal');
-    const characterForm = document.getElementById('character-form');
-    const characterListDiv = document.getElementById('character-list');
-    const modalTitle = document.getElementById('modal-title');
-    const characterIdInput = document.getElementById('character-id');
+    // --- Elements ---
+    const characterList = document.getElementById('character-list');
     const noCharactersMessage = document.getElementById('no-characters-message');
+    const openModalBtn = document.getElementById('open-character-modal-btn');
+    const characterModal = document.getElementById('character-modal');
+    const characterModalCloseBtn = document.getElementById('character-modal-close');
+    const characterForm = document.getElementById('character-form');
+    const saveCharacterBtn = document.getElementById('save-character-btn');
+    const modalTitle = document.getElementById('modal-title');
 
-    // Key for localStorage (local to this page's logic)
-    const STORAGE_KEY = 'dndCharacters';
+    // --- Constants ---
+    const STORAGE_KEY_CHARACTERS = 'dndCharacters';
 
-    // --- localStorage Operations ---
-
-    /**
-     * Retrieves all characters from localStorage.
-     * @returns {Array<Object>} - An array of character objects.
-     */
-    const getCharactersFromLocalStorage = () => {
-        try {
-            const charactersJSON = localStorage.getItem(STORAGE_KEY);
-            return charactersJSON ? JSON.parse(charactersJSON) : [];
-        } catch (e) {
-            console.error("Error retrieving characters from localStorage:", e);
-            showConfirmationModal("Error loading characters. Your browser's storage might be full or blocked. Check console for details.", () => {}, true);
-            return [];
-        }
+    // --- Helper Functions ---
+    const getCharacters = () => {
+        const charactersJSON = localStorage.getItem(STORAGE_KEY_CHARACTERS);
+        return charactersJSON ? JSON.parse(charactersJSON) : [];
     };
 
-    /**
-     * Saves a character to localStorage (adds new or updates existing).
-     * @param {Object} characterData - The character data to save.
-     * @param {string|null} characterId - The ID of the character if updating, null if new.
-     */
-    const saveCharacter = (characterData, characterId = null) => {
-        try {
-            console.log("Attempting to save character data:", characterData);
-            let characters = getCharactersFromLocalStorage();
-
-            if (characterId) {
-                // Update existing character
-                const index = characters.findIndex(char => char.id === characterId);
-                if (index !== -1) {
-                    characters[index] = { ...characterData, id: characterId }; // Preserve existing ID
-                    console.log("Updating existing character. New array:", characters);
-                } else {
-                    console.warn("Character ID not found for update, adding as new:", characterId);
-                    characterData.id = Date.now().toString(); // Generate new ID if not found
-                    characters.push(characterData);
-                }
-            } else {
-                // Add new character with a unique ID
-                characterData.id = Date.now().toString(); // Simple unique ID
-                characters.push(characterData);
-                console.log("Adding new character. New array:", characters);
-            }
-
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
-            console.log("Character data successfully saved to localStorage.");
-            closeCharacterModal(); // Close modal after successful save
-            loadCharacters(); // Reload characters to update the display
-        } catch (e) {
-            console.error("Error saving character to localStorage:", e);
-            let errorMessage = "Failed to save character. Your browser's storage might be full or blocked. Check console for details.";
-            if (e.name === 'QuotaExceededError') {
-                errorMessage = "Failed to save character: Local storage limit reached. Please delete some characters or clear browser data.";
-            } else if (e.name === 'SecurityError') {
-                errorMessage = "Failed to save character: Browser security settings prevent storage (e.g., private browsing).";
-            }
-            showConfirmationModal(errorMessage, () => {}, true);
-        }
+    const saveCharacters = (characters) => {
+        localStorage.setItem(STORAGE_KEY_CHARACTERS, JSON.stringify(characters));
     };
 
-    /**
-     * Deletes a character from localStorage.
-     * @param {string} characterId - The ID of the character to delete.
-     */
-    const deleteCharacter = (characterId) => {
-        try {
-            console.log("Attempting to delete character with ID:", characterId);
-            let characters = getCharactersFromLocalStorage();
-            const initialLength = characters.length;
-            characters = characters.filter(char => char.id !== characterId);
-            if (characters.length < initialLength) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
-                console.log("Character successfully deleted from localStorage. New array:", characters);
-                loadCharacters(); // Reload characters to update the display
-            } else {
-                console.warn("Character with ID not found, nothing to delete:", characterId);
-                showConfirmationModal("Character not found for deletion.", () => {}, true);
-            }
-        } catch (e) {
-            console.error("Error deleting character from localStorage:", e);
-            showConfirmationModal("Failed to delete character. Check console for details.", () => {}, true);
-        }
-    };
-
-    /**
-     * Renders a single character card.
-     * @param {Object} character - The character object with an 'id' property.
-     * @returns {HTMLElement} - The character card element.
-     */
-    const renderCharacterCard = (character) => {
-        const card = document.createElement('div');
-        card.className = 'character-card';
-        card.setAttribute('data-id', character.id); // Store ID on the element
-
-        card.innerHTML = `
-            <h3>${character.name}</h3>
-            <p><strong>Class:</strong> ${character.class}</p>
-            <p><strong>Race:</strong> ${character.race}</p>
-            <p><strong>Background:</strong> ${character.background}</p>
-            <div class="character-card-actions">
-                <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
-                <button class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
-            </div>
-        `;
-
-        // Add event listeners for edit and delete buttons on the card
-        card.querySelector('.edit-btn').addEventListener('click', () => {
-            openCharacterModal(character); // Open modal with this character's data
-        });
-
-        card.querySelector('.delete-btn').addEventListener('click', () => {
-            showConfirmationModal(`Are you sure you want to delete ${character.name}?`, () => {
-                deleteCharacter(character.id);
-            });
-        });
-
-        return card;
-    };
-
-    /**
-     * Loads and displays all characters from localStorage.
-     */
-    const loadCharacters = () => {
-        const characters = getCharactersFromLocalStorage();
-        characterListDiv.innerHTML = ''; // Clear current list
+    const renderCharacters = () => {
+        const characters = getCharacters();
+        characterList.innerHTML = ''; // Clear existing cards
 
         if (characters.length === 0) {
             noCharactersMessage.classList.remove('hidden');
+            return;
         } else {
             noCharactersMessage.classList.add('hidden');
-            // characters.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Uncomment if using timestamp for sorting
-            characters.forEach((character) => {
-                const card = renderCharacterCard(character);
-                characterListDiv.appendChild(card);
-            });
         }
+
+        characters.forEach(character => {
+            const characterCard = document.createElement('div');
+            characterCard.className = 'character-card';
+            characterCard.dataset.id = character.id; // Store ID for editing/deleting
+
+            characterCard.innerHTML = `
+                <h3>${character.name}</h3>
+                <p><strong>Class:</strong> ${character.class}</p>
+                <p><strong>Race:</strong> ${character.race}</p>
+                <p><strong>Background:</strong> ${character.background}</p>
+                <div class="card-buttons">
+                    <button class="edit-character-btn">Edit</button>
+                    <button class="delete-character-btn">Delete</button>
+                </div>
+            `;
+            characterList.appendChild(characterCard);
+        });
     };
 
-    // --- Modal Functions (local to character page) ---
-    /**
-     * Opens the character modal.
-     * If characterData is provided, it's for editing; otherwise, for creating.
-     * @param {Object|null} characterData - The character data to populate the form, or null for a new character.
-     */
-    const openCharacterModal = (characterData = null) => {
-        characterForm.reset(); // Clear the form
-        characterIdInput.value = ''; // Clear hidden ID input
+    const openCharacterModal = (character = {}) => {
+        characterForm.reset(); // Clear form
+        characterForm.dataset.id = character.id || ''; // Set ID for editing
+        modalTitle.textContent = character.id ? 'Edit Character' : 'Create New Character';
 
-        if (characterData) {
+        if (character.id) {
             // Populate form for editing
-            modalTitle.textContent = 'Edit Character';
-            characterIdInput.value = characterData.id; // Set hidden ID
-            document.getElementById('character-name').value = characterData.name;
-            document.getElementById('character-class').value = characterData.class;
-            document.getElementById('character-race').value = characterData.race;
-            document.getElementById('character-background').value = characterData.background;
-        } else {
-            // Setup for new character
-            modalTitle.textContent = 'Create New Character';
+            document.getElementById('character-name').value = character.name || '';
+            document.getElementById('character-class').value = character.class || 'Warrior';
+            document.getElementById('character-race').value = character.race || 'Human';
+            document.getElementById('character-background').value = character.background || '';
         }
         characterModal.classList.remove('hidden');
     };
 
-    /**
-     * Closes the character modal.
-     */
     const closeCharacterModal = () => {
         characterModal.classList.add('hidden');
     };
 
-
-    // --- Event Listeners (local to character page) ---
-
-    // Open Modal button
-    if (openModalBtn) openModalBtn.addEventListener('click', () => openCharacterModal());
-
-    // Close Modal button
-    if (closeModalBtn) closeModalBtn.addEventListener('click', closeCharacterModal);
-
-    // Close modal if overlay is clicked (but not the content itself)
-    if (characterModal) characterModal.addEventListener('click', (event) => {
+    // --- Event Listeners ---
+    openModalBtn?.addEventListener('click', () => openCharacterModal());
+    characterModalCloseBtn?.addEventListener('click', closeCharacterModal);
+    characterModal?.addEventListener('click', (event) => {
         if (event.target === characterModal) {
             closeCharacterModal();
         }
     });
 
-    // Handle form submission (Create/Update character)
-    if (characterForm) characterForm.addEventListener('submit', (event) => {
+    characterForm?.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        const characterId = characterIdInput.value || null; // Get ID if editing
-        const characterData = {
+        const id = characterForm.dataset.id;
+        const newCharacterData = {
+            id: id || Date.now(), // Use existing ID or generate new one
             name: document.getElementById('character-name').value,
             class: document.getElementById('character-class').value,
             race: document.getElementById('character-race').value,
-            background: document.getElementById('character-background').value,
-            // You can add a timestamp here if you want to store creation/last modified time
-            // timestamp: new Date().toISOString()
+            background: document.getElementById('character-background').value
         };
 
-        // Basic validation: ensure all fields have values before attempting to save
-        if (!characterData.name || !characterData.class || !characterData.race || !characterData.background) {
-            showConfirmationModal("Please fill in all character fields.", () => {}, true);
-            return;
+        let characters = getCharacters();
+        if (id) {
+            // Update existing character
+            const index = characters.findIndex(char => char.id == id);
+            if (index !== -1) {
+                characters[index] = newCharacterData;
+            }
+        } else {
+            // Add new character
+            characters.push(newCharacterData);
         }
 
-        saveCharacter(characterData, characterId);
+        saveCharacters(characters);
+        renderCharacters();
+        closeCharacterModal();
     });
 
-    // Initial load of characters when the page loads
-    loadCharacters();
+    characterList?.addEventListener('click', (event) => {
+        const target = event.target;
+        const card = target.closest('.character-card');
+        if (!card) return;
+
+        const characterId = card.dataset.id;
+        let characters = getCharacters();
+        const characterToEdit = characters.find(char => char.id == characterId);
+
+        if (target.classList.contains('edit-character-btn')) {
+            openCharacterModal(characterToEdit);
+        } else if (target.classList.contains('delete-character-btn')) {
+            showConfirmationModal('Are you sure you want to delete this character?', () => {
+                const updatedCharacters = characters.filter(char => char.id != characterId);
+                saveCharacters(updatedCharacters);
+                renderCharacters();
+            });
+        }
+    });
+
+    // --- Initial Load ---
+    renderCharacters();
 }
 
 
@@ -439,161 +377,176 @@ function initCharacterPage() {
 // =================================================================
 function initCampaignPage() {
     // --- Elements ---
+    const campaignList = document.getElementById('campaign-list');
     const openModalBtn = document.getElementById('openModalBtn');
     const campaignModal = document.getElementById('campaignModal');
-    const detailModal = document.getElementById('detailModal');
     const createModalClose = document.getElementById('createModalClose');
-    const detailModalClose = document.getElementById('detailModalClose');
     const campaignForm = document.getElementById('campaign-form');
-    const campaignList = document.getElementById('campaign-list');
+    const modalTitle = document.getElementById('modal-title');
+    const detailModal = document.getElementById('detailModal');
+    const detailModalClose = document.getElementById('detailModalClose');
     const enemyOthersCheckbox = document.getElementById('enemy-others-checkbox');
     const enemyOthersText = document.getElementById('enemy-others-text');
-    const modalTitle = document.getElementById('modal-title');
-    const saveBtn = document.getElementById('save-campaign-btn');
-    const STORAGE_KEY = 'dndCampaigns';
 
-    // --- LocalStorage Functions ---
-    const getCampaigns = () => JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    const saveCampaigns = (campaigns) => localStorage.setItem(STORAGE_KEY, JSON.stringify(campaigns));
+    // --- Constants ---
+    const STORAGE_KEY_CAMPAIGNS = 'dndCampaigns';
 
-    // --- Core Functions ---
+    // --- Helper Functions ---
+    const getCampaigns = () => {
+        const campaignsJSON = localStorage.getItem(STORAGE_KEY_CAMPAIGNS);
+        return campaignsJSON ? JSON.parse(campaignsJSON) : [];
+    };
+
+    const saveCampaigns = (campaigns) => {
+        localStorage.setItem(STORAGE_KEY_CAMPAIGNS, JSON.stringify(campaigns));
+    };
+
     const renderCampaigns = () => {
-        campaignList.innerHTML = '';
-        getCampaigns().forEach(campaign => {
-            const card = document.createElement('div');
-            card.className = 'campaign-card';
-            card.dataset.id = campaign.id;
-            card.innerHTML = `
+        const campaigns = getCampaigns();
+        campaignList.innerHTML = ''; // Clear existing cards
+
+        if (campaigns.length === 0) {
+            campaignList.innerHTML = '<p class="no-campaigns-message">No campaigns created yet. Click "Add New Campaign" to begin!</p>';
+            return;
+        }
+
+        campaigns.forEach(campaign => {
+            const campaignCard = document.createElement('div');
+            campaignCard.className = 'campaign-card';
+            campaignCard.dataset.id = campaign.id;
+
+            let difficultyClass = '';
+            if (campaign.difficulty === 'Easy') difficultyClass = 'difficulty-easy';
+            else if (campaign.difficulty === 'Medium') difficultyClass = 'difficulty-medium';
+            else if (campaign.difficulty === 'Hard') difficultyClass = 'difficulty-hard';
+
+            campaignCard.innerHTML = `
                 <h3>${campaign.name}</h3>
-                <p>Status: In Progress</p>
-                <span class="difficulty-tag difficulty-${campaign.difficulty}">${campaign.difficulty}</span>
+                <p>${campaign.description.substring(0, 100)}...</p>
+                <p class="difficulty-tag ${difficultyClass}">${campaign.difficulty}</p>
                 <div class="card-actions">
-                    <button class="edit-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                    <button class="view-btn"><i class="fas fa-eye"></i> View</button>
+                    <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
                 </div>
             `;
-            // Add event listener for card detail view (excluding action buttons)
-            card.addEventListener('click', (e) => {
-                // Check if the click target is NOT one of the action buttons or their icons
-                if (!e.target.closest('.card-actions button')) {
-                    showCampaignDetail(campaign.id);
-                }
-            });
-
-            // Add specific listeners for edit and delete buttons
-            card.querySelector('.edit-btn').addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent card click from triggering
-                openEditModal(campaign.id);
-            });
-            card.querySelector('.delete-btn').addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent card click from triggering
-                showConfirmationModal(`Are you sure you want to delete "${campaign.name}"?`, () => {
-                    saveCampaigns(getCampaigns().filter(c => c.id != campaign.id));
-                    renderCampaigns();
-                });
-            });
-
-            campaignList.appendChild(card);
+            campaignList.appendChild(campaignCard);
         });
     };
 
-    const openCreateModal = () => {
-        modalTitle.textContent = "New Campaign";
-        saveBtn.textContent = "Save Campaign";
+    const openCampaignModal = (campaign = {}) => {
         campaignForm.reset();
-        document.getElementById('campaign-id').value = '';
-        enemyOthersText.disabled = true;
-        campaignModal.style.display = 'block';
-    };
+        enemyOthersText.classList.add('hidden'); // Hide others text by default
+        enemyOthersText.value = ''; // Clear its value
 
-    const openEditModal = (id) => {
-        const campaign = getCampaigns().find(c => c.id == id);
-        if (!campaign) return;
-        modalTitle.textContent = "Edit Campaign";
-        saveBtn.textContent = "Update Campaign";
-        document.getElementById('campaign-id').value = campaign.id;
-        document.getElementById('campaign-name').value = campaign.name;
-        document.getElementById('campaign-description').value = campaign.description;
-        document.getElementById('difficulty').value = campaign.difficulty;
+        campaignForm.dataset.id = campaign.id || '';
+        modalTitle.textContent = campaign.id ? 'Edit Campaign' : 'New Campaign';
 
-        // Reset all checkboxes first
-        campaignForm.querySelectorAll('input[name="secrets"]').forEach(cb => cb.checked = false);
-        campaignForm.querySelectorAll('input[name="enemy-types"]').forEach(cb => cb.checked = false);
+        if (campaign.id) {
+            document.getElementById('campaign-name').value = campaign.name || '';
+            document.getElementById('campaign-description').value = campaign.description || '';
 
-        // Populate secrets
-        campaign.secrets.forEach(secret => {
-            const checkbox = campaignForm.querySelector(`input[name="secrets"][value="${secret}"]`);
-            if (checkbox) checkbox.checked = true;
-        });
-
-        // Populate enemy types
-        const standardEnemies = ['Undead', 'Monsters', 'Beasts', 'Celestial', 'Dragon', 'Mystics'];
-        let otherEnemyFound = false;
-        let otherEnemyValue = '';
-
-        campaign.enemyTypes.forEach(enemy => {
-            if (standardEnemies.includes(enemy)) {
-                const checkbox = campaignForm.querySelector(`input[name="enemy-types"][value="${enemy}"]`);
-                if (checkbox) checkbox.checked = true;
-            } else {
-                // This is an "Others" type enemy
-                otherEnemyFound = true;
-                otherEnemyValue = enemy;
+            // Populate enemy types checkboxes
+            document.querySelectorAll('input[name="enemy-type"]').forEach(checkbox => {
+                checkbox.checked = campaign.enemyTypes.includes(checkbox.value);
+            });
+            // Handle 'Others' enemy type
+            if (campaign.enemyTypes && campaign.enemyTypes.includes('Others')) {
+                enemyOthersCheckbox.checked = true;
+                enemyOthersText.classList.remove('hidden');
+                const othersValue = campaign.enemyTypes.find(type => type !== 'Goblins' && type !== 'Orcs' && type !== 'Dragons');
+                if (othersValue && othersValue !== 'Others') { // Check if there's a specific 'Others' value
+                    enemyOthersText.value = othersValue;
+                } else {
+                    enemyOthersText.value = ''; // Clear if only "Others" was checked without specific text
+                }
             }
-        });
 
-        enemyOthersCheckbox.checked = otherEnemyFound || campaign.enemyTypes.includes('Others');
-        enemyOthersText.disabled = !enemyOthersCheckbox.checked;
-        enemyOthersText.value = otherEnemyValue;
+
+            // Populate secrets checkboxes
+            document.querySelectorAll('input[name="secrets"]').forEach(checkbox => {
+                checkbox.checked = campaign.secrets.includes(checkbox.value);
+            });
+            document.getElementById('difficulty').value = campaign.difficulty || 'Easy';
+        }
 
         campaignModal.style.display = 'block';
     };
 
-    const showCampaignDetail = (id) => {
-        const campaign = getCampaigns().find(c => c.id == id);
-        if (!campaign) return;
+    const openDetailModal = (campaign) => {
         document.getElementById('detail-name').textContent = campaign.name;
         document.getElementById('detail-description').textContent = campaign.description;
-        document.getElementById('detail-enemies').textContent = campaign.enemyTypes.length ? campaign.enemyTypes.join(', ') : 'None specified';
-        document.getElementById('detail-secrets').textContent = campaign.secrets.length ? campaign.secrets.join(', ') : 'None specified';
-        const difficultySpan = document.getElementById('detail-difficulty');
-        difficultySpan.textContent = campaign.difficulty;
-        difficultySpan.className = `difficulty-tag difficulty-${campaign.difficulty}`;
+        document.getElementById('detail-enemies').textContent = campaign.enemyTypes.join(', ') || 'None';
+        document.getElementById('detail-secrets').textContent = campaign.secrets.join(', ') || 'None';
+
+        const detailDifficulty = document.getElementById('detail-difficulty');
+        detailDifficulty.textContent = campaign.difficulty;
+        detailDifficulty.className = 'difficulty-tag'; // Reset class
+        if (campaign.difficulty === 'Easy') detailDifficulty.classList.add('difficulty-easy');
+        else if (campaign.difficulty === 'Medium') detailDifficulty.classList.add('difficulty-medium');
+        else if (campaign.difficulty === 'Hard') detailDifficulty.classList.add('difficulty-hard');
+
         detailModal.style.display = 'block';
     };
 
     // --- Event Listeners ---
-    if (openModalBtn) openModalBtn.addEventListener('click', openCreateModal);
-    if (createModalClose) createModalClose.addEventListener('click', () => campaignModal.style.display = 'none');
-    if (detailModalClose) detailModalClose.addEventListener('click', () => detailModal.style.display = 'none');
-    
-    // Close modals if overlay is clicked
-    window.addEventListener('click', (e) => {
-        if (e.target === campaignModal) campaignModal.style.display = 'none';
-        if (e.target === detailModal) detailModal.style.display = 'none';
+    openModalBtn?.addEventListener('click', () => openCampaignModal());
+    createModalClose?.addEventListener('click', () => {
+        campaignModal.style.display = 'none';
+    });
+    detailModalClose?.addEventListener('click', () => {
+        detailModal.style.display = 'none';
     });
 
-    if (enemyOthersCheckbox) enemyOthersCheckbox.addEventListener('change', () => {
-        enemyOthersText.disabled = !enemyOthersCheckbox.checked;
-        if (!enemyOthersText.disabled) enemyOthersText.focus();
-        else enemyOthersText.value = '';
+    window.addEventListener('click', (event) => {
+        if (event.target == campaignModal) {
+            campaignModal.style.display = 'none';
+        }
+        if (event.target == detailModal) {
+            detailModal.style.display = 'none';
+        }
     });
 
-    if (campaignForm) campaignForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = document.getElementById('campaign-id').value;
-        const campaigns = getCampaigns();
-        let enemyTypes = Array.from(campaignForm.querySelectorAll('input[name="enemy-types"]:checked:not(#enemy-others-checkbox)')).map(cb => cb.value);
+    // Toggle 'Others' enemy type text input
+    enemyOthersCheckbox?.addEventListener('change', () => {
         if (enemyOthersCheckbox.checked) {
-            const othersValue = enemyOthersText.value.trim();
-            if (othersValue) enemyTypes.push(othersValue);
-            else {
-                // If "Others" is checked but text field is empty, still include "Others"
+            enemyOthersText.classList.remove('hidden');
+            enemyOthersText.setAttribute('required', 'required'); // Make required if checked
+        } else {
+            enemyOthersText.classList.add('hidden');
+            enemyOthersText.removeAttribute('required'); // Remove required if unchecked
+            enemyOthersText.value = ''; // Clear value when hidden
+        }
+    });
+
+
+    campaignForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const id = campaignForm.dataset.id;
+        const enemyTypes = Array.from(campaignForm.querySelectorAll('input[name="enemy-type"]:checked')).map(cb => cb.value);
+
+        if (enemyOthersCheckbox.checked && enemyOthersText.value.trim() !== '') {
+            if (!enemyTypes.includes(enemyOthersText.value.trim())) { // Avoid duplicates if "Others" was already in predefined list
+                 // Replace "Others" if it was checked, with the custom value.
+                 // Otherwise, just add the custom value.
+                const othersIndex = enemyTypes.indexOf('Others');
+                if (othersIndex > -1) {
+                    enemyTypes[othersIndex] = enemyOthersText.value.trim();
+                } else {
+                    enemyTypes.push(enemyOthersText.value.trim());
+                }
+            }
+        } else if (enemyOthersCheckbox.checked && enemyOthersText.value.trim() === '') {
+            // If "Others" is checked but text is empty, ensure "Others" value is still added
+            if (!enemyTypes.includes('Others')) {
                 enemyTypes.push('Others');
             }
         }
+
+
         const campaignData = {
-            id: id || Date.now().toString(), // Ensure string ID for consistency
+            id: id || Date.now(),
             name: document.getElementById('campaign-name').value,
             description: document.getElementById('campaign-description').value,
             enemyTypes: enemyTypes,
@@ -601,12 +554,7 @@ function initCampaignPage() {
             difficulty: document.getElementById('difficulty').value
         };
 
-        // Basic validation for campaign name and description
-        if (!campaignData.name.trim() || !campaignData.description.trim() || !campaignData.difficulty) {
-            showConfirmationModal("Please fill in Campaign Name, Description, and select a Difficulty.", () => {}, true);
-            return;
-        }
-
+        let campaigns = getCampaigns();
         if (id) {
             const index = campaigns.findIndex(c => c.id == id);
             if (index !== -1) {
@@ -631,11 +579,39 @@ function initCampaignPage() {
             if (e.name === 'QuotaExceededError') {
                 errorMessage = "Failed to save campaign: Local storage limit reached. Please delete some campaigns or clear browser data.";
             } else if (e.name === 'SecurityError') {
-                errorMessage = "Failed to save campaign: Browser security settings prevent storage (e.g., private browsing).";
+                errorMessage = "Failed to save campaign: Browser security settings prevent storage (e.g., private Browse).";
             }
             showConfirmationModal(errorMessage, () => {}, true);
         }
     });
+
+    campaignList?.addEventListener('click', (e) => {
+        const card = e.target.closest('.campaign-card');
+        if (!card) return;
+        const id = card.dataset.id;
+        const campaigns = getCampaigns();
+        const campaign = campaigns.find(c => c.id == id);
+
+        if (e.target.matches('.delete-btn, .delete-btn *')) {
+            showConfirmationModal('Are you sure you want to delete this campaign?', () => {
+                saveCampaigns(getCampaigns().filter(c => c.id != id));
+                renderCampaigns();
+            });
+        } else if (e.target.matches('.edit-btn, .edit-btn *')) {
+            openCampaignModal(campaign);
+        } else if (e.target.matches('.view-btn, .view-btn *')) {
+            openDetailModal(campaign);
+        }
+    });
+
+    // Auto-Resizing Description Box - specific to campaign form
+    const descriptionBox = document.getElementById('campaign-description');
+    if (descriptionBox) {
+        descriptionBox.addEventListener('input', () => {
+            descriptionBox.style.height = 'auto';
+            descriptionBox.style.height = descriptionBox.scrollHeight + 'px';
+        });
+    }
 
     // Initial Load
     renderCampaigns();
