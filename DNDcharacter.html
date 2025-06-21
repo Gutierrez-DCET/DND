@@ -3,96 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Your D&D Characters</title>
+    <title>Create Your D&D Character</title>
     <link rel="stylesheet" href="dndstyles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <a href="index.html" class="back-button">← Back to Home</a>
     <div class="container">
-        <h1>Manage Your Characters</h1>
-
-        <button id="open-character-modal-btn" class="create-character-btn">
-            <i class="fas fa-plus-circle"></i> Create New Character
-        </button>
-
-        <div class="character-list-section">
-            <h2>Your Current Characters</h2>
-            <div id="character-list" class="character-grid">
-                <p id="no-characters-message" class="hidden">No characters created yet. Click "Create New Character" to begin!</p>
+        <h1>Create Your Character</h1>
+        <form id="character-form">
+            <div class="form-group">
+                <label for="character-name">Character Name:</label>
+                <input type="text" id="character-name" name="character-name" required>
             </div>
+
+            <div class="form-group">
+                <label for="character-class">Class:</label>
+                <select id="character-class" name="character-class" required>
+                    <option value="Warrior">Warrior</option>
+                    <option value="Mage">Mage</option>
+                    <option value="Rogue">Rogue</option>
+                    <option value="Cleric">Cleric</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="character-race">Race:</label>
+                <select id="character-race" name="character-race" required>
+                    <option value="Human">Human</option>
+                    <option value="Elf">Elf</option>
+                    <option value="Dwarf">Dwarf</option>
+                    <option value="Orc">Orc</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="character-background">Background:</label>
+                <textarea id="character-background" name="character-background" rows="4" placeholder="Describe your character's history..." required></textarea>
+            </div>
+
+            <button type="submit">Create / Update Character</button>
+        </form>
+
+        <div id="character-display" class="character-display hidden">
+            <h2>Your Character</h2>
+            <div class="character-info">
+                <p><strong>Name:</strong> <span id="display-name"></span></p>
+                <p><strong>Class:</strong> <span id="display-class"></span></p>
+                <p><strong>Race:</strong> <span id="display-race"></span></p>
+                <p><strong>Background:</strong> <span id="display-background"></span></p>
+            </div>
+            <button id="reset-character-btn" class="reset-button">Reset Character</button>
         </div>
     </div>
 
-    <div id="character-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button class="close-button" id="character-modal-close">&times;</button>
-            <h2 id="modal-title">Create New Character</h2>
-            <form id="character-form">
-                <input type="hidden" id="character-id" name="character-id">
-
-                <div class="form-group">
-                    <label for="character-name">Character Name:</label>
-                    <input type="text" id="character-name" name="character-name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="character-class">Class:</label>
-                    <select id="character-class" name="character-class" required>
-                        <option value="Warrior">Warrior</option>
-                        <option value="Mage">Mage</option>
-                        <option value="Rogue">Rogue</option>
-                        <option value="Cleric">Cleric</option>
-                        <option value="Bard">Bard</option>
-                        <option value="Paladin">Paladin</option>
-                        <option value="Ranger">Ranger</option>
-                        <option value="Sorcerer">Sorcerer</option>
-                        <option value="Warlock">Warlock</option>
-                        <option value="Monk">Monk</option>
-                        <option value="Druid">Druid</option>
-                        <option value="Barbarian">Barbarian</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="character-race">Race:</label>
-                    <select id="character-race" name="character-race" required>
-                        <option value="Human">Human</option>
-                        <option value="Elf">Elf</option>
-                        <option value="Dwarf">Dwarf</option>
-                        <option value="Halfling">Halfling</option>
-                        <option value="Dragonborn">Dragonborn</option>
-                        <option value="Tiefling">Tiefling</option>
-                        <option value="Gnome">Gnome</option>
-                        <option value="Half-Orc">Half-Orc</option>
-                        <option value="Half-Elf">Half-Elf</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="character-background">Background:</label>
-                    <textarea id="character-background" name="character-background" rows="4" placeholder="Describe your character's history, personality, and aspirations..." required></textarea>
-                </div>
-
-                <button type="submit" id="save-character-btn">Save Character</button>
-            </form>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <div class="comments-section">
-            <h3>Leave a Comment</h3>
-            <textarea placeholder="Share your thoughts..."></textarea>
-            <button>Submit Comment</button>
-        </div>
-        <div class="social-buttons">
-            <a href="https://www.facebook.com" target="_blank" class="icon-button"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://github.com/Gutierrez-DCET" target="_blank" class="icon-button"><i class="fab fa-github"></i></a>
-            <a href="https://discord.com" target="_blank" class="icon-button"><i class="fab fa-discord"></i></a>
-        </div>
-        <p>&copy; 2024 Tabletop Nexus. All rights reserved.</p>
-    </footer>
-
-    <script src="dndscript.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

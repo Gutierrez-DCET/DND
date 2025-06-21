@@ -1,559 +1,155 @@
-/* General Body Styles */
 body {
-    font-family: 'Segoe UI', 'Inter', sans-serif; /* Added Inter for a modern look */
-    background: linear-gradient(135deg, #1a1a2e 0%, #2c2c4d 100%); /* Subtle gradient background */
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #1e1e2f;
     color: #e0e0e0;
     margin: 0;
     padding: 40px 20px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-/* Main Container */
 .container {
-    max-width: 900px; /* Slightly wider container */
+    max-width: 800px;
     margin: 40px auto;
     padding: 30px;
     background-color: #2a2a3e;
-    border-radius: 15px; /* More rounded corners */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     border: 1px solid #4f4f7a;
     text-align: center;
-    margin-bottom: 40px;
-    position: relative; /* For z-index context */
-    z-index: 1; /* Ensure container is above potential background effects */
 }
 
-/* Headings */
 h1 {
     color: #fff;
     margin-bottom: 30px;
-    font-size: 2.5em; /* Slightly larger heading */
 }
 
-/* Add Campaign Button */
 .add-campaign-btn {
-    padding: 14px 28px; /* Larger padding */
-    font-size: 1.2em; /* Larger font */
+    padding: 12px 24px;
+    font-size: 1.1em;
     font-weight: bold;
-    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); /* Vibrant gradient */
-    color: white;
-    border: none;
-    border-radius: 9999px; /* Pill shape */
-    cursor: pointer;
-    transition: all 0.3s ease; /* Smooth transitions for all properties */
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4); /* Stronger initial shadow */
-    margin-bottom: 30px; /* Space below button */
-    display: inline-flex; /* Allows icon and text to align */
-    align-items: center;
-    gap: 10px; /* Space between icon and text */
-}
-
-.add-campaign-btn i {
-    font-size: 1.1em; /* Icon size */
-}
-
-.add-campaign-btn:hover {
-    transform: translateY(-3px) scale(1.02); /* Lift and slightly enlarge */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Even stronger shadow */
-    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%); /* Reverse gradient on hover */
-}
-
-/* Campaign Cards Container */
-.campaign-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
-    gap: 25px; /* Spacing between cards */
-    margin-top: 25px;
-    padding-top: 15px; /* Padding for the top section */
-    border-top: 1px solid #4f4f7a; /* Separator */
-}
-
-/* No Campaigns Message */
-.no-campaigns-message {
-    color: #a0a0c0;
-    font-style: italic;
-    padding: 20px;
-    border: 1px dashed #4f4f7a;
-    border-radius: 10px;
-    margin: 30px auto;
-    max-width: 400px;
-}
-
-/* Campaign Card Styles */
-.campaign-card {
-    background-color: #3a3a5a;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #4f4f7a;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 220px; /* Ensure cards have a consistent minimum height */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.campaign-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
-
-.campaign-card h3 {
-    color: #fff;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.6em;
-    text-align: center;
-}
-
-.campaign-card p {
-    color: #c0c0d8;
-    font-size: 0.95em;
-    margin-bottom: 15px;
-    line-height: 1.5;
-}
-
-.campaign-card .difficulty-tag {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 5px;
-    font-size: 0.85em;
-    font-weight: bold;
-    margin-top: 10px;
-    text-align: center;
-}
-
-/* Difficulty Colors */
-.difficulty-easy {
-    background-color: #4CAF50; /* Green */
-    color: white;
-}
-
-.difficulty-medium {
-    background-color: #FFC107; /* Amber */
-    color: #333;
-}
-
-.difficulty-hard {
-    background-color: #F44336; /* Red */
-    color: white;
-}
-
-.card-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    justify-content: center;
-}
-
-.card-actions button {
     background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
     color: white;
-    padding: 10px 15px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9em;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    flex-grow: 1; /* Allow buttons to grow and fill space */
-    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.card-actions button:hover {
-    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+.add-campaign-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(65, 123, 237, 0.4);
 }
 
-/* Specific button colors for consistency */
-.card-actions .delete-btn {
-    background: #d32f2f; /* Red */
-}
-.card-actions .delete-btn:hover {
-    background: #c62828;
-}
-
-.card-actions .view-btn {
-    background: #0288d1; /* Blue */
-}
-.card-actions .view-btn:hover {
-    background: #0277bd;
-}
-
-
-/* Back to Home Button */
 .back-button {
     position: absolute;
     top: 20px;
     left: 20px;
-    background-color: #4a4a6a;
+    background-color: #444;
     color: white;
-    padding: 8px 15px;
-    border-radius: 8px;
+    padding: 8px 16px;
     text-decoration: none;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-    z-index: 10;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .back-button:hover {
-    background-color: #5a5a7a;
+    background-color: #666;
+    transform: translateY(-1px);
 }
 
 /* Modal Styles */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
-    display: flex; /* Use flexbox for centering */
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
 }
 
 .modal-content {
     background-color: #2a2a3e;
-    margin: auto;
+    margin: 5% auto;
     padding: 30px;
-    border: 1px solid #4f4f7a;
     border-radius: 12px;
+    border: 1px solid #4f4f7a;
     width: 90%;
-    max-width: 600px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    max-width: 550px;
     position: relative;
-    color: #e0e0e0;
-    max-height: 90vh; /* Limit height for scrollability */
-    overflow-y: auto; /* Enable scrolling for long forms */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.modal-content .close {
-    color: #aaa;
+.close {
     position: absolute;
     top: 15px;
     right: 20px;
-    font-size: 30px;
+    color: #aaa;
+    font-size: 28px;
     font-weight: bold;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.3s;
 }
+.close:hover { color: #fff; }
 
-.modal-content .close:hover,
-.modal-content .close:focus {
-    color: #fff;
-    text-decoration: none;
-}
-
-.modal-content h2 {
-    color: #fff;
-    margin-top: 0;
-    margin-bottom: 30px;
-    font-size: 2em;
-    text-align: center;
-}
-
-.modal-content form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px; /* Slightly less gap for forms */
-}
-
-.modal-content label {
-    display: block;
-    margin-bottom: 5px;
-    color: #a0a0c0;
-    font-weight: bold;
-    text-align: left; /* Align labels to the left */
-}
-
+.modal-content h2 { color: #fff; text-align: center; margin-bottom: 25px; }
+.modal-content label { display: block; margin-bottom: 8px; font-weight: bold; color: #a0a0c0; text-align: left; }
 .modal-content input[type="text"],
 .modal-content textarea,
 .modal-content select {
-    width: calc(100% - 24px); /* Account for padding */
-    padding: 12px;
+    width: 100%; padding: 12px; margin-bottom: 15px;
+    background-color: #1e1e2f; color: #fff; border: 1px solid #4f4f7a;
+    border-radius: 8px; box-sizing: border-box; font-size: 1em;
+}
+
+fieldset {
     border: 1px solid #4f4f7a;
-    border-radius: 8px;
-    background-color: #3a3a5a;
-    color: #e0e0e0;
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 15px; margin-bottom: 20px; border-radius: 8px;
 }
+legend { color: #a0a0c0; font-weight: bold; padding: 0 10px; }
 
-.modal-content input[type="text"]:focus,
-.modal-content textarea:focus,
-.modal-content select:focus {
-    border-color: #6a11cb;
-    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.3);
-    outline: none;
-}
+.checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; text-align: left;}
+.checkbox-grid label { display: flex; align-items: center; gap: 8px; font-weight: normal; color: #e0e0e0;}
+.others-label input[type="text"] { width: 120px; margin-left: 5px; padding: 6px; font-size: 0.9em; }
 
-.modal-content textarea {
-    resize: vertical;
-    min-height: 80px;
-}
+.modal-content button[type="submit"] { width: 100%; margin-top: 10px; }
 
-.checkbox-grid {
+/* Campaign Cards */
+.campaign-list {
+    margin-top: 40px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive columns */
-    gap: 15px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-.checkbox-grid label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: normal; /* Override bold from general label */
-    color: #c0c0d8;
-}
-
-.checkbox-grid input[type="checkbox"] {
-    width: auto;
-    margin: 0;
-    accent-color: #2575fc; /* Highlight checkbox */
-}
-
-.modal-content button[type="submit"] {
-    background: linear-gradient(90deg, #4CAF50 0%, #2e7d32 100%); /* Green gradient for save */
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    width: 100%;
-    margin-top: 25px;
-}
-
-.modal-content button[type="submit"]:hover {
-    background: linear-gradient(90deg, #2e7d32 0%, #4CAF50 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-}
-
-/* Detail Modal specific styles */
-.detail-modal-content {
-    text-align: left;
-    max-width: 700px; /* Wider for details */
-}
-
-.detail-modal-content h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.detail-modal-content p {
-    margin-bottom: 10px;
-    font-size: 1.05em;
-    color: #c0c0d8;
-}
-
-.detail-modal-content strong {
-    color: #fff;
-}
-
-.detail-modal-content .difficulty-tag {
-    font-size: 1em; /* Adjust size for detail modal */
-    padding: 5px 10px;
-}
-
-
-/* Footer Styles */
-.footer {
-    width: 100%;
-    background-color: #1a1a2e;
-    color: #e0e0e0;
-    padding: 30px 20px;
-    text-align: center;
-    margin-top: auto; /* Pushes footer to the bottom */
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
-    border-top: 1px solid #4f4f7a;
-    box-sizing: border-box;
-}
-
-.comments-section {
-    margin-bottom: 25px;
-}
-
-.comments-section h3 {
-    color: #fff;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-}
-
-.comments-section textarea {
-    width: calc(100% - 40px);
-    max-width: 600px;
-    min-height: 100px;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #4f4f7a;
-    background-color: #3a3a5a;
-    color: #e0e0e0;
-    margin-bottom: 15px;
-    font-size: 1em;
-    resize: vertical;
-}
-
-.comments-section textarea:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
-}
-
-.comments-section button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.comments-section button:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-}
-
-.social-buttons {
-    display: flex;
-    justify-content: center; /* Ensure buttons are centered within their container */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
-    margin-top: 25px;
+    text-align: left;
 }
 
-.icon-button {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 55px;
-    height: 55px;
-    background-color: #333;
-    color: white;
-    border-radius: 50%;
-    font-size: 1.8em;
-    text-decoration: none;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+.campaign-card {
+    background-color: #3a3a52;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #5a5a7f;
+    position: relative;
+    cursor: pointer;
 }
+.campaign-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); }
 
-.icon-button:hover {
-    transform: translateY(-3px) scale(1.08);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-}
+.campaign-card h3 { margin: 0 0 10px; color: #fff; }
+.campaign-card p { margin: 0; color: #b0b0d0; font-size: 0.9em; }
+.difficulty-tag { font-weight: bold; font-size: 0.9em; padding: 4px 10px; border-radius: 20px; color: #fff; }
+.difficulty-Easy { background-color: #2e7d32; }
+.difficulty-Medium { background-color: #f57c00; }
+.difficulty-Hard { background-color: #d32f2f; }
+.difficulty-Nightmare { background-color: #6a11cb; }
 
-/* Specific hover colors for social icons */
-.icon-button:hover .fa-facebook-f {
-    color: #1877F2;
-}
+.card-actions { position: absolute; top: 15px; right: 15px; display: flex; gap: 10px; }
+.card-actions button { background: none; border: none; color: #a0a0c0; cursor: pointer; font-size: 1.1em; padding: 5px; transition: color 0.3s; }
+.card-actions button:hover { color: #fff; }
 
-.icon-button:hover .fa-github {
-    color: #6e5494;
-}
-
-.icon-button:hover .fa-discord {
-    color: #7289DA;
-}
-
-/* Media Queries for responsiveness */
-@media (max-width: 768px) {
-    .container {
-        padding: 25px;
-        margin: 25px auto;
-    }
-
-    h1 {
-        font-size: 2.2em;
-    }
-
-    .add-campaign-btn {
-        padding: 12px 24px;
-        font-size: 1.1em;
-    }
-
-    .modal-content {
-        padding: 25px;
-        margin: 5% auto;
-    }
-
-    .modal-content h2 {
-        font-size: 1.6em;
-    }
-
-    .checkbox-grid {
-        grid-template-columns: 1fr; /* Stack checkboxes on smaller screens */
-        gap: 10px;
-    }
-
-    .campaign-list {
-        grid-template-columns: 1fr; /* Stack campaign cards */
-        gap: 20px;
-    }
-
-    .campaign-card {
-        min-height: auto; /* Allow height to adjust */
-    }
-
-    .back-button {
-        top: 15px;
-        left: 15px;
-        padding: 6px 12px;
-        font-size: 13px;
-    }
-
-    .add-campaign-btn {
-        padding: 12px 20px;
-        font-size: 1.1em;
-    }
-}
-
-@media (max-width: 480px) {
-    body {
-        padding: 20px 10px;
-    }
-
-    .container {
-        padding: 15px;
-        margin: 20px auto;
-    }
-
-    h1 {
-        font-size: 2em;
-    }
-
-    .add-campaign-btn {
-        font-size: 1em;
-        padding: 10px 18px;
-    }
-
-    .modal-content {
-        padding: 20px;
-    }
-
-    .modal-content h2 {
-        font-size: 1.4em;
-    }
-}
+/* Detail Modal */
+.detail-modal-content p { line-height: 1.6; }
+.detail-modal-content strong { color: #a0a0c0; }
+#detail-description { color: #e0e0e0; font-style: italic; margin-top: -10px; display: block; }

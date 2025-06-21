@@ -4,11 +4,10 @@ body {
     color: #e0e0e0;
     margin: 0;
     padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
     min-height: 100vh;
-    padding-bottom: 80px;
-    display: flex; /* Use flexbox for body to better align content vertically */
-    flex-direction: column;
-    align-items: center; /* Center content horizontally */
 }
 
 .container {
@@ -17,13 +16,11 @@ body {
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 800px; /* Increased max-width for better character list display */
+    max-width: 500px;
     border: 1px solid #4f4f7a;
-    margin: 0 auto 40px auto;
-    box-sizing: border-box; /* Ensure padding is included in the width */
 }
 
-h1, h2 {
+h1 {
     text-align: center;
     color: #fff;
     margin-bottom: 30px;
@@ -36,449 +33,110 @@ h1, h2 {
 
 label {
     display: block;
+    font-weight: bold;
     margin-bottom: 8px;
     color: #a0a0c0;
-    font-weight: bold;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select,
-textarea {
-    width: calc(100% - 20px);
+input, select, textarea {
+    width: 100%;
     padding: 12px;
+    margin-top: 5px;
+    background-color: #1e1e2f;
+    color: #fff;
     border: 1px solid #4f4f7a;
     border-radius: 8px;
-    background-color: #3a3a5a;
-    color: #e0e0e0;
+    box-sizing: border-box;
     font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-select:focus,
-textarea:focus {
-    border-color: #6a11cb;
-    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.3);
+input:focus, select:focus, textarea:focus {
     outline: none;
+    border-color: #7a7acc;
+    box-shadow: 0 0 0 3px rgba(122, 122, 204, 0.3);
 }
 
 textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 100px;
 }
 
 button {
+    width: 100%;
+    padding: 12px;
     background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
     color: white;
-    padding: 12px 25px;
     border: none;
     border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    display: block; /* Make button a block element */
-    width: 100%; /* Full width */
-    margin-top: 25px; /* Add margin to separate from form elements */
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 button:hover {
-    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 15px rgba(65, 123, 237, 0.4);
+}
+
+.character-display {
+    margin-top: 30px;
+    padding: 25px;
+    background-color: #3a3a52;
+    border: 1px solid #5a5a7f;
+    border-radius: 12px;
+}
+
+.character-display h2 {
+    text-align: center;
+    margin-top: 0;
+    color: #fff;
+    border-bottom: 2px solid #5a5a7f;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.character-display .character-info p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+.character-display .character-info strong {
+    color: #a0a0c0;
+    margin-right: 8px;
+}
+
+.reset-button {
+    margin-top: 20px;
+    background: #c13535;
+    font-size: 1em;
+}
+
+.reset-button:hover {
+    background: #d64a4a;
+    box-shadow: 0 4px 15px rgba(193, 53, 53, 0.4);
 }
 
 .back-button {
     position: absolute;
     top: 20px;
     left: 20px;
-    background-color: #4a4a6a;
+    background-color: #444;
     color: white;
-    padding: 8px 15px;
-    border-radius: 8px;
+    padding: 8px 16px;
     text-decoration: none;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-    z-index: 10; /* Ensure it's above other content */
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .back-button:hover {
-    background-color: #5a5a7a;
+    background-color: #666;
+    transform: translateY(-1px);
 }
 
-/* Character Display Card */
-.character-display {
-    background-color: #3a3a5a;
-    padding: 25px;
-    border-radius: 12px;
-    margin-top: 30px;
-    border: 1px solid #4f4f7a;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    text-align: left;
-}
-
-.character-display h2 {
-    color: #fff;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-    text-align: center;
-}
-
-.character-info p {
-    margin-bottom: 10px;
-    font-size: 1.1em;
-    color: #c0c0d8;
-}
-
-.character-info strong {
-    color: #fff;
-}
-
-.reset-button {
-    background-color: #d32f2f;
-    margin-top: 20px;
-}
-
-.reset-button:hover {
-    background-color: #c62828;
-}
-
+/* Utility class to hide elements */
 .hidden {
     display: none;
-}
-
-/* Footer Styles */
-.footer {
-    width: 100%;
-    background-color: #1a1a2e;
-    color: #e0e0e0;
-    padding: 30px 20px;
-    text-align: center;
-    margin-top: auto; /* Pushes footer to the bottom */
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
-    border-top: 1px solid #4f4f7a;
-    box-sizing: border-box;
-}
-
-.comments-section {
-    margin-bottom: 25px;
-}
-
-.comments-section h3 {
-    color: #fff;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-}
-
-.comments-section textarea {
-    width: calc(100% - 40px);
-    max-width: 600px;
-    min-height: 100px;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #4f4f7a;
-    background-color: #3a3a5a;
-    color: #e0e0e0;
-    margin-bottom: 15px;
-    font-size: 1em;
-    resize: vertical;
-}
-
-.comments-section textarea:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
-}
-
-.comments-section button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.comments-section button:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-}
-
-.social-buttons {
-    display: flex;
-    justify-content: center; /* Ensure buttons are centered within their container */
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.icon-button {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 55px;
-    height: 55px;
-    background-color: #333;
-    color: white;
-    border-radius: 50%;
-    font-size: 1.8em;
-    text-decoration: none;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.icon-button:hover {
-    transform: translateY(-3px) scale(1.08);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-}
-
-/* Specific hover colors for social icons */
-.icon-button:hover .fa-facebook-f {
-    color: #1877F2;
-}
-
-.icon-button:hover .fa-github {
-    color: #6e5494;
-}
-
-.icon-button:hover .fa-discord {
-    color: #7289DA;
-}
-
-/* Media Queries for responsiveness */
-@media (max-width: 768px) {
-    .container {
-        padding: 20px 25px;
-    }
-
-    .character-grid {
-        grid-template-columns: 1fr; /* Stack cards on small screens */
-    }
-
-    .modal-content {
-        padding: 20px;
-    }
-
-    .close-button {
-        font-size: 24px;
-        right: 15px;
-    }
-
-    .footer {
-        padding: 20px;
-    }
-
-    .comments-section textarea {
-        width: calc(100% - 20px);
-    }
-}
-
-/* Styles for Character Management */
-.character-list-section {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #4f4f7a;
-}
-
-.create-character-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: auto; /* Allow button to size based on content */
-    margin: 20px auto; /* Center the button */
-    padding: 12px 30px; /* More padding for a bigger button */
-    font-size: 1.1em;
-}
-
-.create-character-btn i {
-    font-size: 1.3em;
-}
-
-.character-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
-    padding-top: 10px;
-}
-
-.character-card {
-    background-color: #3a3a5a;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #4f4f7a;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    text-align: left;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Pushes buttons to bottom */
-}
-
-.character-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
-
-.character-card h3 {
-    color: #fff;
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.6em;
-    text-align: center;
-}
-
-.character-card p {
-    margin-bottom: 8px;
-    color: #c0c0d8;
-    font-size: 1em;
-}
-
-.character-card .card-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    justify-content: center;
-}
-
-.character-card .card-buttons button {
-    flex-grow: 1; /* Allow buttons to expand */
-    width: auto; /* Override default button width */
-    padding: 10px 15px;
-    font-size: 0.95em;
-    margin-top: 0; /* Remove top margin from general button style */
-}
-
-.edit-character-btn {
-    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%); /* Use a gradient for edit */
-}
-
-.edit-character-btn:hover {
-    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-}
-
-.delete-character-btn {
-    background-color: #d32f2f; /* Red for delete */
-}
-
-.delete-character-btn:hover {
-    background-color: #c62828;
-}
-
-#no-characters-message {
-    text-align: center;
-    color: #a0a0c0;
-    font-style: italic;
-    font-size: 1.1em;
-    padding: 30px;
-    border: 1px dashed #4f4f7a;
-    border-radius: 8px;
-    margin-top: 20px;
-}
-
-/* Modal Styles */
-.modal-overlay {
-    display: flex; /* Use flexbox for centering */
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-}
-
-.modal-content {
-    background-color: #2a2a3e;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    width: 90%;
-    max-width: 600px;
-    position: relative;
-    border: 1px solid #4f4f7a;
-    color: #e0e0e0;
-    max-height: 90vh; /* Limit height for scrollability */
-    overflow-y: auto; /* Enable scrolling for long forms */
-}
-
-.modal-content h2 {
-    margin-top: 0;
-    color: #fff;
-    font-size: 2em;
-}
-
-.close-button {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: bold;
-    color: #aaa;
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 0;
-    transition: color 0.3s ease;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: #fff;
-}
-
-/* Styles for confirmation modal */
-.small-modal {
-    max-width: 400px;
-    text-align: center;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 25px;
-}
-
-.modal-actions button {
-    width: auto; /* Allow buttons to size to content */
-    flex-grow: 0; /* Prevent them from stretching */
-    padding: 10px 20px;
-    font-size: 1em;
-}
-
-.confirm-yes-btn {
-    background-color: #4CAF50;
-}
-
-.confirm-yes-btn:hover {
-    background-color: #45a049;
-}
-
-.confirm-no-btn {
-    background-color: #f44336;
-}
-
-.confirm-no-btn:hover {
-    background-color: #da190b;
-}
-
-.error-modal {
-    border-color: #f44336; /* Red border for errors */
-}
-
-.error-modal #confirmation-message {
-    color: #f44336; /* Red text for error messages */
-    font-weight: bold;
 }
