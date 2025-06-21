@@ -36,21 +36,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isError) {
             confirmYesBtn.textContent = 'OK';
             confirmNoBtn.classList.add('hidden'); // Hide 'No' button
-            confirmYesBtn.removeEventListener('click', confirmAction); // Remove previous listener
-            confirmYesBtn.addEventListener('click', hideConfirmationModal); // Make 'OK' close it
+            // Ensure any previously attached 'confirmAction' listener is removed before adding the new 'OK' behavior
+            confirmYesBtn.removeEventListener('click', confirmAction);
+            // Add the 'OK' button behavior (closes modal)
+            confirmYesBtn.addEventListener('click', hideConfirmationModal, { once: true }); // Using { once: true } for auto-removal
         } else {
             confirmYesBtn.textContent = 'Yes';
             confirmNoBtn.classList.remove('hidden'); // Show 'No' button
-            // Re-attach original listeners, ensuring no duplicates if already there
-            confirmYesBtn.removeEventListener('click', hideConfirmationModal); // Remove 'OK' behavior if it was there
-            confirmYesBtn.addEventListener('click', () => { // Re-add 'Yes' behavior
+            // Remove the 'OK' behavior if it was previously set
+            confirmYesBtn.removeEventListener('click', hideConfirmationModal);
+            // Re-add the 'Yes' behavior (triggers confirmAction)
+            confirmYesBtn.addEventListener('click', () => {
                 if (confirmAction) {
                     confirmAction();
                 }
-            }, { once: true }); // Use { once: true } to prevent multiple attachments
+            }, { once: true }); // Using { once: true } for auto-removal
         }
     };
-
 
     /**
      * Hides the custom confirmation modal.
@@ -105,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return charactersJSON ? JSON.parse(charactersJSON) : [];
         } catch (e) {
             console.error("Error retrieving characters from localStorage:", e);
-            showConfirmationModal("Error loading characters. Your browser's storage might be full or blocked.", () => {}, true);
+            showConfirmationModal("Error loading characters. Your browser's storage might be full or blocked. Check console for details.", () => {}, true);
             return [];
         }
     };
@@ -117,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const saveCharacter = (characterData, characterId = null) => {
         try {
+            console.log("Attempting to save character data:", characterData);
             let characters = getCharactersFromLocalStorage();
 
             if (characterId) {
@@ -124,19 +127,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 const index = characters.findIndex(char => char.id === characterId);
                 if (index !== -1) {
                     characters[index] = { ...characterData, id: characterId }; // Preserve existing ID
+                    console.log("Updating existing character. New array:", characters);
+                } else {
+                    console.warn("Character ID not found for update, adding as new:", characterId);
+                    characterData.id = Date.now().toString(); // Generate new ID if not found
+                    characters.push(characterData);
                 }
             } else {
                 // Add new character with a unique ID
                 characterData.id = Date.now().toString(); // Simple unique ID
                 characters.push(characterData);
+                console.log("Adding new character. New array:", characters);
             }
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
+            console.log("Character data successfully saved to localStorage.");
             closeCharacterModal(); // Close modal after successful save
             loadCharacters(); // Reload characters to update the display
         } catch (e) {
             console.error("Error saving character to localStorage:", e);
-            showConfirmationModal("Failed to save character. Your browser's storage might be full or blocked.", () => {}, true);
+            let errorMessage = "Failed to save character. Your browser's storage might be full or blocked. Check console for details.";
+            if (e.name === 'QuotaExceededError') {
+                errorMessage = "Failed to save character: Local storage limit reached. Please delete some characters or clear browser data.";
+            } else if (e.name === 'SecurityError') {
+                errorMessage = "Failed to save character: Browser security settings prevent storage (e.g., private browsing).";
+            }
+            showConfirmationModal(errorMessage, () => {}, true);
         }
     };
 
@@ -146,13 +162,21 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const deleteCharacter = (characterId) => {
         try {
+            console.log("Attempting to delete character with ID:", characterId);
             let characters = getCharactersFromLocalStorage();
+            const initialLength = characters.length;
             characters = characters.filter(char => char.id !== characterId);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
-            loadCharacters(); // Reload characters to update the display
+            if (characters.length < initialLength) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
+                console.log("Character successfully deleted from localStorage. New array:", characters);
+                loadCharacters(); // Reload characters to update the display
+            } else {
+                console.warn("Character with ID not found, nothing to delete:", characterId);
+                showConfirmationModal("Character not found for deletion.", () => {}, true);
+            }
         } catch (e) {
             console.error("Error deleting character from localStorage:", e);
-            showConfirmationModal("Failed to delete character.", () => {}, true);
+            showConfirmationModal("Failed to delete character. Check console for details.", () => {}, true);
         }
     };
 
@@ -241,21 +265,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // timestamp: new Date().toISOString()
         };
 
+        // Basic validation: ensure all fields have values before attempting to save
+        if (!characterData.name || !characterData.class || !characterData.race || !characterData.background) {
+            showConfirmationModal("Please fill in all character fields.", () => {}, true);
+            return;
+        }
+
         saveCharacter(characterData, characterId);
     });
-
-    // Confirmation modal button listeners
-    // These listeners are now dynamically managed within showConfirmationModal
-    // but we keep the initial setup for clarity and default behavior.
-    confirmYesBtn.addEventListener('click', () => {
-        // This listener will be overridden or triggered based on showConfirmationModal's state
-        if (confirmAction && !confirmNoBtn.classList.contains('hidden')) { // Only act if it's a 'Yes/No' context
-             confirmAction();
-        }
-    });
-
-    confirmNoBtn.addEventListener('click', hideConfirmationModal);
-
 
     // Initial load of characters when the page loads
     loadCharacters();
